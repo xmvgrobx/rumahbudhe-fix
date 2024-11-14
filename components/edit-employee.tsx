@@ -34,6 +34,7 @@ const UpdateEmployee = ({ employee }: { employee: Employee }) => {
               <p className="mt-2 text-sm text-red-500">{state?.Error?.name}</p>
             </div>
           </div>
+
           <div className="mb-5">
             <label
               htmlFor="email"
@@ -53,6 +54,7 @@ const UpdateEmployee = ({ employee }: { employee: Employee }) => {
               <p className="mt-2 text-sm text-red-500">{state?.Error?.email}</p>
             </div>
           </div>
+
           <div className="mb-5">
             <label
               htmlFor="phone"
@@ -72,13 +74,32 @@ const UpdateEmployee = ({ employee }: { employee: Employee }) => {
               <p className="mt-2 text-sm text-red-500">{state?.Error?.phone}</p>
             </div>
           </div>
+
+          <div className="mb-5">
+            <label
+              htmlFor="shift"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Jadwal Shift
+            </label>
+            <input
+              type="text"
+              name="shift"
+              id="shift"
+              className="input input-bordered input-primary w-full max-w-xs"
+              placeholder="Shift..."
+              defaultValue={employee.shift}
+            />
+            <div id="shift-error" aria-live="polite" aria-atomic="true">
+              <p className="mt-2 text-sm text-red-500">{state?.Error?.shift}</p>
+            </div>
+          </div>
           <div id="message-error" aria-live="polite" aria-atomic="true">
             <p className="mt-2 text-sm text-red-500">{state?.message}</p>
           </div>
 
           <SubmitButton label="save" />
 
-          {/* <button className="btn btn-primary">Save</button> */}
         </form>
       </div>
     </div>

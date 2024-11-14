@@ -14,7 +14,7 @@ const UpdateEmployeePage = async({params}: {params:{id: string}}) => {
 
     return (
     <div className='max-e-md mx-auto mt-5'>
-        <h1 className='text-2xl text-center mb-2'>update Employee</h1>
+        <h1 className='text-2xl text-center mb-2'>Update Employee</h1>
         <UpdateEmployee employee={employee}/>
     </div>
   )

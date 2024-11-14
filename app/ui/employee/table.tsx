@@ -19,8 +19,8 @@ const EmployeeTable = async ({
           <th className="py-3 px-6">Name</th>
           <th className="py-3 px-6">Phone Number</th>
           <th className="py-3 px-6">Email</th>
+          <th className="py-3 px-6">Jadwal Shift</th>
 
-          <th className="py-3 px-6">Created At</th>
           <th className="py-3 px-6 text-center">Actions</th>
         </tr>
       </thead>
@@ -31,9 +31,8 @@ const EmployeeTable = async ({
             <td className="py-3 px-6">{e.name}</td>
             <td className="py-3 px-6">{e.phone}</td>
             <td className="py-3 px-6">{e.email}</td>
-            <td className="py-3 px-6">
-              {formatDate(e.createdAt.toString())}
-            </td>
+            <td className="py-3 px-6">{e.shift}</td>
+           
             <td className="flex justify-center gap-1 py-3">
               <EditEmployee id={e.id}/>
               <DeleteEmployee id={e.id}/>
