@@ -115,3 +115,36 @@ model Stok {
   jumlah      String
   harga       Float
 }
+
+// schema.prisma
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Int      // Harga dalam satuan terkecil, misalnya Rupiah (tanpa koma)
+  image     String?  // URL gambar produk
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  TransactionItem TransactionItem[]
+}
+
+model Transaction {
+  id           Int             @id @default(autoincrement())
+  date         DateTime        @default(now())
+  totalAmount  Int             // Total harga transaksi
+  notes        String?         // Catatan tambahan
+  paymentMethod String         // Metode pembayaran, misalnya "QRIS" atau "Cash"
+
+  items        TransactionItem[]
+}
+
+model TransactionItem {
+  id           Int        @id @default(autoincrement())
+  transaction  Transaction @relation(fields: [transactionId], references: [id])
+  transactionId Int
+  product      Product     @relation(fields: [productId], references: [id])
+  productId    Int
+  quantity     Int         // Jumlah item
+  price        Int         // Harga produk saat transaksi (untuk melacak perubahan harga)
+}

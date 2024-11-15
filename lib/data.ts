@@ -56,7 +56,7 @@ export const getTransaksi = async (query: string) => {
   try {
     const transaksi = await prisma.transaksi.findMany({
         where: {
-            name: {
+            id: {
             contains: query,
             mode: 'insensitive'
             },
