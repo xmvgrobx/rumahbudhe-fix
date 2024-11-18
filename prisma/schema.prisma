@@ -81,6 +81,9 @@ model Menu {
   keterangan String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+    transaksiDetail Detail[]
+
 }
 
   model Employee {
@@ -100,7 +103,21 @@ model Transaksi {
   catatan           String   @db.VarChar(250)
   metodeBayar            String   @db.VarChar(100)
   tanggal           DateTime @default(now())
+
+  transaksiDetail Detail[]
 }
+
+model Detail {
+  id           String    @id @default(cuid())
+  transaksiId  String
+  menuId       String
+  quantity     Int
+  subtotal     Float
+
+  transaksi    Transaksi @relation(fields: [transaksiId], references: [id])
+  menu         Menu      @relation(fields: [menuId], references: [id])
+}
+
 
 model Kode {
   id         String   @id @default(cuid())
@@ -114,37 +131,4 @@ model Stok {
   nama  String
   jumlah      String
   harga       Float
-}
-
-// schema.prisma
-
-model Product {
-  id        Int      @id @default(autoincrement())
-  name      String
-  price     Int      // Harga dalam satuan terkecil, misalnya Rupiah (tanpa koma)
-  image     String?  // URL gambar produk
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  TransactionItem TransactionItem[]
-}
-
-model Transaction {
-  id           Int             @id @default(autoincrement())
-  date         DateTime        @default(now())
-  totalAmount  Int             // Total harga transaksi
-  notes        String?         // Catatan tambahan
-  paymentMethod String         // Metode pembayaran, misalnya "QRIS" atau "Cash"
-
-  items        TransactionItem[]
-}
-
-model TransactionItem {
-  id           Int        @id @default(autoincrement())
-  transaction  Transaction @relation(fields: [transactionId], references: [id])
-  transactionId Int
-  product      Product     @relation(fields: [productId], references: [id])
-  productId    Int
-  quantity     Int         // Jumlah item
-  price        Int         // Harga produk saat transaksi (untuk melacak perubahan harga)
 }

@@ -4,7 +4,6 @@ import { DeleteMenu, EditMenu } from './buttons'
 import type { Menu } from "@prisma/client"
 import { formatCurrency } from '@/lib/utils'
 
-
 const MenuCard = ({ data }: { data: Menu }) => {
     return (
         <div className="w-64 border border-gray-200 rounded-lg shadow-lg">

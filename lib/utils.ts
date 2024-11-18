@@ -1,7 +1,7 @@
 import { Revenue } from './definitions';
 
 export const formatCurrency = (amount: number) => {
-  return 'Rp' + (amount).toLocaleString('id-ID', {
+  return 'Rp ' + (amount).toLocaleString('id-ID', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });

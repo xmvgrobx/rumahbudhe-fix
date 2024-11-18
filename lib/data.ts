@@ -41,6 +41,17 @@ export const getImages = async () => {
   }
 };
  
+
+export const getImage = async () => {
+  try {
+    const images = await prisma.menu.findMany(); // Query untuk mengambil data produk
+    return images;
+  } catch (error) {
+    console.error("Error fetching images:", error);
+    return [];
+  }
+};
+
 export const getImagesById = async (id: string) => {
   try {
     const result = await prisma.menu.findUnique({

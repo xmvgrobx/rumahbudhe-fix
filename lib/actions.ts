@@ -6,7 +6,6 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { put, del } from '@vercel/blob';
 import { getImagesById } from './data';
-import { url } from 'inspector';
 
 const EmployeeSchema = z.object({
   name: z.string().min(3),
@@ -45,6 +44,19 @@ const EditMenuSchema = z.object({
   keterangan: z.string().min(5),
 });
 
+// export const TransaksiSchema = z.object({
+//   totalHarga: z.coerce.number().positive(),
+//   jumlah: z.coerce.number().positive(),
+//   catatan: z.string().max(250),
+//   metodeBayar: z.string().min(3),
+//   cartItems: z.array(
+//     z.object({
+//       id: z.string(),
+//       quantity: z.coerce.number().positive(),
+//       harga: z.coerce.number().positive(),
+//     })
+//   ),
+// });
 
 export const saveEmployee = async (prevState: any, formData: FormData) => {
   const validateFields = EmployeeSchema.safeParse(

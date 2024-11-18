@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+.cart-badge {
+    @apply absolute font-bold text-yellow-500 ml-4 mt-1 text-center w-4;
+}
