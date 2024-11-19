@@ -1,131 +1,271 @@
-// 'use client';
+// import React, { useState, FormEvent } from 'react';
 
-// import React, { useState } from 'react';
-// import { useFormState } from 'react-dom';
-// import { saveTransaksi } from '@/lib/actions';
-// import { SubmitButtonMenu } from '@/components/buttons';
+// interface MenuItem {
+//   id: string;
+//   nama: string;
+//   harga: number;
+// }
 
-// const CreateTransaksiForm = ({ cartItems }: { cartItems: any[] }) => {
-//   const [state, formAction] = useFormState(saveTransaksi, null);
-//   const [catatan, setCatatan] = useState('');
-//   const [metodeBayar, setMetodeBayar] = useState('QRIS');
+// interface TransactionFormProps {
+//   menuList: MenuItem[];
+//   onSubmit: (data: {
+//     menuId: string;
+//     quantity: number;
+//     totalHarga: number;
+//     catatan: string;
+//     metodeBayar: string;
+//   }) => void;
+// }
 
-//   const totalHarga = cartItems.reduce(
-//     (sum, item) => sum + item.harga * item.quantity,
-//     0
-//   );
-//   const jumlah = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+// const TransactionForm: React.FC<TransactionFormProps> = ({ menuList, onSubmit }) => {
+//   const [menuId, setMenuId] = useState<string>('');
+//   const [quantity, setQuantity] = useState<number>(1);
+//   const [catatan, setCatatan] = useState<string>('');
+//   const [metodeBayar, setMetodeBayar] = useState<string>('');
+
+//   const handleSubmit = (e: FormEvent) => {
+//     e.preventDefault();
+  
+//     if (!menuId) {
+//       alert('Silakan pilih menu.');
+//       return;
+//     }
+  
+//     if (quantity <= 0) {
+//       alert('Jumlah harus lebih dari 0.');
+//       return;
+//     }
+  
+//     if (!metodeBayar) {
+//       alert('Silakan pilih metode pembayaran.');
+//       return;
+//     }
+  
+//     const selectedMenu = menuList.find((menu) => menu.id === menuId);
+//     if (!selectedMenu) {
+//       alert('Menu tidak valid!');
+//       return;
+//     }
+  
+//     const totalHarga = selectedMenu.harga * quantity;
+  
+//     onSubmit({
+//       menuId,
+//       quantity,
+//       totalHarga,
+//       catatan,
+//       metodeBayar,
+//     });
+//   };
+  
 
 //   return (
-//     <form action={formAction}>
-//       {/* Alert */}
-//       {state?.message ? (
-//         <div
-//           className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50"
-//           role="alert"
+//     <form onSubmit={handleSubmit} className="p-4 bg-gray-100 rounded">
+//       <div className="mb-4">
+//         <label htmlFor="menuId" className="block text-sm font-medium text-gray-700">
+//           Pilih Menu
+//         </label>
+//         <select
+//           id="menuId"
+//           name="menuId"
+//           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+//           value={menuId}
+//           onChange={(e) => setMenuId(e.target.value)}
 //         >
-//           <div className="font-medium">{state?.message}</div>
-//         </div>
-//       ) : null}
+//           <option value="">Pilih menu...</option>
+//           {menuList.map((menu) => (
+//             <option key={menu.id} value={menu.id}>
+//               {menu.nama} - IDR {menu.harga}
+//             </option>
+//           ))}
+//         </select>
+//       </div>
 
 //       <div className="mb-4">
+//         <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
+//           Jumlah
+//         </label>
 //         <input
-//           type="hidden"
-//           name="totalHarga"
-//           value={totalHarga}
-//           readOnly
-//         />
-//         <input
-//           type="hidden"
-//           name="jumlah"
-//           value={jumlah}
-//           readOnly
-//         />
-//         <input
-//           type="hidden"
-//           name="cartItems"
-//           value={JSON.stringify(cartItems)}
-//           readOnly
+//           type="number"
+//           id="quantity"
+//           name="quantity"
+//           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+//           value={quantity}
+//           onChange={(e) => setQuantity(Number(e.target.value))}
+//           min={1}
 //         />
 //       </div>
 
 //       <div className="mb-4">
+//         <label htmlFor="catatan" className="block text-sm font-medium text-gray-700">
+//           Catatan
+//         </label>
 //         <textarea
+//           id="catatan"
 //           name="catatan"
+//           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+//           placeholder="Masukkan catatan untuk transaksi..."
 //           value={catatan}
 //           onChange={(e) => setCatatan(e.target.value)}
-//           className="py-2 px-4 rounded-sm border border-gray-400 w-full"
-//           placeholder="Catatan..."
 //         />
-//         <div aria-live="polite" aria-atomic="true">
-//           <p className="text-sm text-red-500 mt-2">{state?.error?.catatan}</p>
-//         </div>
 //       </div>
 
 //       <div className="mb-4">
+//         <label htmlFor="metodeBayar" className="block text-sm font-medium text-gray-700">
+//           Metode Pembayaran
+//         </label>
 //         <select
+//           id="metodeBayar"
 //           name="metodeBayar"
+//           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
 //           value={metodeBayar}
 //           onChange={(e) => setMetodeBayar(e.target.value)}
-//           className="py-2 px-4 rounded-sm border border-gray-400 w-full"
 //         >
-//           <option value="QRIS">QRIS</option>
-//           <option value="Cash">Cash</option>
+//           <option value="">Pilih metode pembayaran...</option>
+//           <option value="cash">Cash</option>
+//           <option value="e_wallet">E-Wallet</option>
 //         </select>
-//         <div aria-live="polite" aria-atomic="true">
-//           <p className="text-sm text-red-500 mt-2">{state?.error?.metodeBayar}</p>
-//         </div>
 //       </div>
 
-//       <div className="mb-4 pt-4">
-//         <SubmitButtonMenu label="upload" />
-//       </div>
+//       <button
+//         type="submit"
+//         className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+//       >
+//         Selesaikan Transaksi
+//       </button>
 //     </form>
 //   );
 // };
 
-// export default CreateTransaksiForm;
+// export default TransactionForm;
 
-// 'use client';
+import React, { useState, FormEvent } from 'react';
 
-import React, { useState } from 'react';
+interface MenuItem {
+  id: string;
+  nama: string;
+  harga: number;
+}
 
-const CreateTransaksiForm = ({ cartItems }: { cartItems: any[] }) => {
-  const [catatan, setCatatan] = useState('');
-  const [metodeBayar, setMetodeBayar] = useState('QRIS');
+interface TransactionFormProps {
+  menuList: MenuItem[];
+  onSubmit: (data: {
+    menuId: string;
+    quantity: number;
+    totalHarga: number;
+    catatan: string;
+    metodeBayar: string;
+  }) => void;
+}
 
-  const totalHarga = cartItems.reduce((sum, item) => sum + item.harga * item.quantity, 0);
+const TransactionForm: React.FC<TransactionFormProps> = ({ menuList, onSubmit }) => {
+  const [menuId, setMenuId] = useState<string>('');
+  const [quantity, setQuantity] = useState<number>(1);
+  const [catatan, setCatatan] = useState<string>('');
+  const [metodeBayar, setMetodeBayar] = useState<string>('');
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!menuId || !metodeBayar || quantity <= 0) {
+      alert('Silakan lengkapi semua data dengan benar!');
+      return;
+    }
+
+    const selectedMenu = menuList.find((menu) => menu.id === menuId);
+    if (!selectedMenu) {
+      alert('Menu tidak valid!');
+      return;
+    }
+
+    const totalHarga = selectedMenu.harga * quantity;
+
+    onSubmit({
+      menuId,
+      quantity,
+      totalHarga,
+      catatan,
+      metodeBayar,
+    });
+  };
 
   return (
-    <form className="mt-6">
+    <form onSubmit={handleSubmit} className="p-4 bg-gray-100 rounded">
       <div className="mb-4">
-        <label>Catatan:</label>
+        <label htmlFor="menuId" className="block text-sm font-medium text-gray-700">
+          Pilih Menu
+        </label>
+        <select
+          id="menuId"
+          name="menuId"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+          value={menuId}
+          onChange={(e) => setMenuId(e.target.value)}
+        >
+          <option value="">Pilih menu...</option>
+          {menuList.map((menu) => (
+            <option key={menu.id} value={menu.id}>
+              {menu.nama} - IDR {menu.harga}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="mb-4">
+        <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
+          Jumlah
+        </label>
+        <input
+          type="number"
+          id="quantity"
+          name="quantity"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+          value={quantity}
+          onChange={(e) => setQuantity(Number(e.target.value))}
+          min={1}
+        />
+      </div>
+
+      <div className="mb-4">
+        <label htmlFor="catatan" className="block text-sm font-medium text-gray-700">
+          Catatan
+        </label>
         <textarea
-          className="w-full p-2 border rounded"
+          id="catatan"
+          name="catatan"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+          placeholder="Masukkan catatan untuk transaksi..."
           value={catatan}
           onChange={(e) => setCatatan(e.target.value)}
         />
       </div>
+
       <div className="mb-4">
-        <label>Metode Pembayaran:</label>
+        <label htmlFor="metodeBayar" className="block text-sm font-medium text-gray-700">
+          Metode Pembayaran
+        </label>
         <select
-          className="w-full p-2 border rounded"
+          id="metodeBayar"
+          name="metodeBayar"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
           value={metodeBayar}
           onChange={(e) => setMetodeBayar(e.target.value)}
         >
-          <option value="QRIS">QRIS</option>
-          <option value="Cash">Cash</option>
+          <option value="">Pilih metode pembayaran...</option>
+          <option value="cash">Cash</option>
+          <option value="credit_card">Kartu Kredit</option>
+          <option value="e_wallet">E-Wallet</option>
         </select>
       </div>
-      <div className="mb-4">
-        <p>Total Harga: Rp {totalHarga.toLocaleString()}</p>
-      </div>
-      <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded w-full">
-        Konfirmasi Transaksi
+
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+      >
+        Selesaikan Transaksi
       </button>
     </form>
   );
 };
 
-export default CreateTransaksiForm;
-
+export default TransactionForm;

@@ -1,27 +1,63 @@
-import Link from "next/link";
-import { getImages } from "@/lib/data";
-import MenuCard from "@/components/menu-transaksi";
+// import { CreateTransaksi } from "@/components/buttons";
+import TransaksiTable from "../ui/transaksi/table";
+import Search from "@/components/search";
 
-export default async function Home() {
-  const images = await getImages();
-
-  return (
-    <div className="max-w-screen-lg mx-auto py-14">
-      <div className="flex items-end justify-between">
-        <h1 className="text-4xl font-bold">Transaksi</h1>
-        <Link
-          href="/transaksi/create"
-          className="py-3 px-6 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg"
-        >
-          Tambah Transaksi
-        </Link>
-      </div>
-      <div className="grid md:grid-cols-3 gap-5 mt-10">
-        {/* {images.map((item) => (
-          <MenuCard key={item.id} data={item} />
-        ))}  */}
-        {/* <MenuCard/> */}
-      </div>
-    </div>
-  );
+const Transaksi = async ({
+    searchParams,
+  }: {
+    searchParams?: {
+      query?: string;
+      page?: string;
+    };
+  }) => {
+    const query = searchParams?.query || "";
+    return (
+        <div className="max-w-screen-md mx-auto mt-5">
+           
+            <div className="flxe items-center justify-between gap-1 mb-5">
+            <Search/>
+            <TransaksiTable query={query}/>
+            </div>
+        </div>
+    )
 }
+
+export default Transaksi;
+
+// //app\employee\page.tsx
+// import Link from "next/link";
+// import TableData from "@/components/tabledata";
+// import { Suspense } from "react";
+// import Search from "@/components/search";
+ 
+// const Home = async ({
+//         searchParams,
+//     }: {
+//         searchParams?: {
+//             query?: string;
+//         };
+//     }) => {
+//     const query = searchParams?.query || "";
+//     return (
+//     <div className="w-screen py-20 flex justify-center flex-col items-center">
+//       <div className="flex items-center justify-between gap-1 mb-5">
+//         <h1 className="text-4xl font-bold">Next.js 14 CRUD and Search with Prisma Mysql | TailwindCSS DaisyUI</h1>
+//       </div>    
+//         <div className="overflow-x-auto">
+//           <div className="mb-2 w-full text-right">
+//             <Link
+//               href="/employee/create"
+//               className="btn btn-primary">
+//               Create
+//             </Link>
+//           </div>
+//           <Search />
+//           <Suspense key={query}>
+//             <TableData query={query}/>
+//           </Suspense>
+//       </div>  
+//     </div>
+//   ); 
+// };
+  
+// export default Home;

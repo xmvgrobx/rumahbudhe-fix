@@ -1,11 +1,28 @@
 import { Revenue } from './definitions';
 
+const CURRENCY_FORMATTER = new Intl.NumberFormat(undefined, {
+  currency: "IDR",
+  style: "currency",
+})
+
 export const formatCurrency = (amount: number) => {
-  return 'Rp ' + (amount).toLocaleString('id-ID', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+  if (typeof amount !== "number" || isNaN(amount)) {
+    return "IDR 0"; // Tampilkan default jika amount tidak valid
+  }
+  return "IDR " + amount.toLocaleString("id-ID", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   });
 };
+
+
+
+// export const formatCurrency = (amount: number) => {
+//   return 'Rp ' + (amount).toLocaleString('id-ID', {
+//     minimumFractionDigits: 0,
+//     maximumFractionDigits: 0,
+//   });
+// };
 
 
 export const formatDateToLocal = (

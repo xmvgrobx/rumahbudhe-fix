@@ -81,3 +81,18 @@ export const getTransaksi = async (query: string) => {
     throw new Error('Failed to fetch transaksi data');
   }
 };
+
+// export const getImagesByIdetails = async(query: string) =>{
+//   try{
+//     const result = await prisma.detail.findMany({
+//   where: {
+//     transaksiId: 'id-transaksi',
+//   },
+//   include: {
+//     menu: true
+//   });
+//   return result;
+//   } catch (error) {
+//   throw new Error('Failed to fetch transaksi data');
+//   }
+// };

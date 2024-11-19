@@ -82,7 +82,7 @@ model Menu {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-    transaksiDetail Detail[]
+  transaksiDetail Detail[]
 
 }
 
@@ -101,7 +101,7 @@ model Transaksi {
   totalHarga       Float
   jumlah            Float
   catatan           String   @db.VarChar(250)
-  metodeBayar            String   @db.VarChar(100)
+  metodeBayar       String   @db.VarChar(100)
   tanggal           DateTime @default(now())
 
   transaksiDetail Detail[]

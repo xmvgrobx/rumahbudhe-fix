@@ -44,19 +44,6 @@ const EditMenuSchema = z.object({
   keterangan: z.string().min(5),
 });
 
-// export const TransaksiSchema = z.object({
-//   totalHarga: z.coerce.number().positive(),
-//   jumlah: z.coerce.number().positive(),
-//   catatan: z.string().max(250),
-//   metodeBayar: z.string().min(3),
-//   cartItems: z.array(
-//     z.object({
-//       id: z.string(),
-//       quantity: z.coerce.number().positive(),
-//       harga: z.coerce.number().positive(),
-//     })
-//   ),
-// });
 
 export const saveEmployee = async (prevState: any, formData: FormData) => {
   const validateFields = EmployeeSchema.safeParse(
@@ -221,4 +208,36 @@ export const updateMenu = async (
   
   revalidatePath('/menu');
   redirect('/menu');
+};
+
+export const DetailSchema = z.object({
+  transaksiId: z.string().nonempty("Transaksi ID is required"),
+  menuId: z.string().nonempty("Menu ID is required"),
+  quantity: z.number().int().positive("Quantity must be a positive integer"),
+  subtotal: z.number().positive("Subtotal must be a positive number"),
+});
+
+export const saveDetail = async (prevState: any, formData: FormData) => {
+  const validateFields = DetailSchema.safeParse(
+      Object.fromEntries(formData.entries())
+  );
+  if (!validateFields.success) {
+      return {
+          Error: validateFields.error.flatten().fieldErrors,
+      };
+  }
+  try {
+      await prisma.detail.create({
+          data: {
+              transaksiId: validateFields.data.transaksiId,
+              menuId: validateFields.data.menuId,
+              quantity: validateFields.data.quantity,
+              subtotal: validateFields.data.subtotal,
+          },
+      });
+  } catch (error) {
+      return { message: 'Failed to create detail' };
+  }
+  revalidatePath('/detail');
+  redirect('/detail');
 };

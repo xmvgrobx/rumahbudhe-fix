@@ -1,6 +1,7 @@
 // 'use client';
 
 import React from 'react';
+import { formatCurrency } from '@/lib/utils';
 
 const Cart = ({
   cartItems,
@@ -11,8 +12,11 @@ const Cart = ({
   removeFromCart: (id: string) => void;
   clearCart: () => void;
 }) => {
-  const totalHarga = cartItems.reduce((sum, item) => sum + item.harga * item.quantity, 0);
-
+  const totalHarga = cartItems.reduce(
+    (sum, item) => sum + (item.harga || 0) * (item.quantity || 0),
+    0
+  );
+  
   return (
     <div className="fixed top-0 right-0 h-screen p-4">
       <div className="p-4 border rounded-lg shadow-lg bg-white w-80 overflow-y-auto h-full">
@@ -29,7 +33,7 @@ const Cart = ({
                 <div>
                   <span className="font-semibold">{item.nama}</span>
                   <div className="text-sm text-gray-500">
-                    Rp {item.harga.toLocaleString()} x {item.quantity}
+                  {formatCurrency(item.harga || 0)} x {item.quantity || 0}
                   </div>
                 </div>
                 <button
@@ -44,7 +48,8 @@ const Cart = ({
         )}
         {cartItems.length > 0 && (
           <div>
-            <div className="mt-4 font-semibold">Total: Rp {totalHarga.toLocaleString()}</div>
+            <div className="mt-4 font-semibold">  Total: {formatCurrency(totalHarga)}
+            </div>
             <button
               className="mt-4 bg-red-500 text-white px-4 py-2 rounded w-full"
               onClick={clearCart}
