@@ -63,24 +63,45 @@ export const SubmitButton = ({ label }: { label: string }) => {
   );
 };
 
-export const SubmitButtonMenu = ({ label }: { label: string }) => {
-  const { pending } = useFormStatus();
+// export const SubmitButtonMenu = ({ label }: { label: string }) => {
+//   const { pending } = useFormStatus();
+//   return (
+//     <button
+//       className={clsx(
+//         'w-full rounded-sm bg-yellow-200 px-6 py-2.5 text-base font-medium text-white hover:bg-yellow-300',
+//         {
+//           'cursor-progress opacity-50': pending,
+//         },
+//       )}
+//       type="submit"
+//       disabled={pending}
+//     >
+//       {label === 'upload' ? (
+//         <>{pending ? 'Uploading...' : 'Upload'}</>
+//       ) : (
+//         <>{pending ? 'Updating...' : 'Update'}</>
+//       )}
+//     </button>
+//   );
+// };
+
+
+export const SubmitButtonMenu = ({ 
+  label, 
+  disabled 
+}: { 
+  label: string;
+  disabled?: boolean;
+}) => {
   return (
     <button
-      className={clsx(
-        'w-full rounded-sm bg-yellow-200 px-6 py-2.5 text-base font-medium text-white hover:bg-yellow-300',
-        {
-          'cursor-progress opacity-50': pending,
-        },
-      )}
       type="submit"
-      disabled={pending}
+      disabled={disabled}
+      className={`w-full bg-gray-800 text-white py-2 px-4 rounded-sm hover:bg-gray-900 ${
+        disabled ? 'opacity-50 cursor-not-allowed' : ''
+      }`}
     >
-      {label === 'upload' ? (
-        <>{pending ? 'Uploading...' : 'Upload'}</>
-      ) : (
-        <>{pending ? 'Updating...' : 'Update'}</>
-      )}
+      {label}
     </button>
   );
 };

@@ -253,14 +253,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ menuList, onSubmit })
         >
           <option value="">Pilih metode pembayaran...</option>
           <option value="cash">Cash</option>
-          <option value="credit_card">Kartu Kredit</option>
           <option value="e_wallet">E-Wallet</option>
         </select>
       </div>
 
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+        className="w-full bg-yellow-400 text-white py-2 px-4 rounded hover:bg-yellow-700"
       >
         Selesaikan Transaksi
       </button>

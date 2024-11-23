@@ -1,38 +1,39 @@
 import { NextResponse } from 'next/server';
-import {prisma} from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
+import { CartItem } from '@/lib/types'; // Assuming you have a type definition for CartItem
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { menuId, quantity, totalHarga, catatan, metodeBayar } = body;
+    const { items, totalHarga, metodeBayar, catatan } = body;
 
-    if (!menuId || !quantity || !totalHarga || !metodeBayar) {
+    if (!items || items.length === 0 || !totalHarga || !metodeBayar) {
       return NextResponse.json({ error: 'Data tidak lengkap!' }, { status: 400 });
     }
 
-    // Periksa apakah menuId ada di tabel Menu
-    const menu = await prisma.menu.findUnique({
-      where: { id: menuId },
-    });
+    // Calculate the total quantity
+    const totalQuantity = items.reduce(
+      (sum: number, item: CartItem) => sum + item.quantity,
+      0
+    );
 
-    if (!menu) {
-      return NextResponse.json({ error: 'Menu tidak ditemukan!' }, { status: 404 });
-    }
-
-    // Buat transaksi baru
+    // Create a new transaction
     const transaksi = await prisma.transaksi.create({
       data: {
         totalHarga,
-        jumlah: quantity,
+        jumlah: totalQuantity,
+        metodeBayar: metodeBayar.toString(), // Convert the metodeBayar value to a string
         catatan,
-        metodeBayar,
         transaksiDetail: {
-          create: {
-            menuId,
-            quantity,
-            subtotal: totalHarga,
-          },
+          create: items.map((item: CartItem) => ({
+            menuId: item.menuId,
+            quantity: item.quantity,
+            subtotal: item.subtotal,
+          })),
         },
+      },
+      include: {
+        transaksiDetail: true,
       },
     });
 

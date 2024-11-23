@@ -238,6 +238,6 @@ export const saveDetail = async (prevState: any, formData: FormData) => {
   } catch (error) {
       return { message: 'Failed to create detail' };
   }
-  revalidatePath('/detail');
-  redirect('/detail');
+  revalidatePath('/transaksi');
+  redirect('/transaksi');
 };
