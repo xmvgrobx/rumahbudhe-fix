@@ -31,7 +31,7 @@ const Cart = ({
 
   // Fungsi untuk validasi kode referral
   const validateReferralCode = (code: string) => {
-    const validCodes = ['DISKON10', 'PROMO10', 'HEMAT10', 'CL16', 'GR63'];
+    const validCodes = ['DISKON10', 'PROMO10', 'HEMAT10', 'CL16', 'GR63', 'CINTACHANTIKA'];
     return validCodes.includes(code.toUpperCase());
   };
 

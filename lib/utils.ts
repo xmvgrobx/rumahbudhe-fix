@@ -1,4 +1,10 @@
 import { Revenue } from './definitions';
+import { ClassValue, clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 const CURRENCY_FORMATTER = new Intl.NumberFormat(undefined, {
   currency: "IDR",
@@ -10,7 +16,7 @@ export const formatCurrency = (amount: number) => {
     return "IDR 0"; // Tampilkan default jika amount tidak valid
   }
   return "IDR " + amount.toLocaleString("id-ID", {
-    minimumFractionDigits: 2,
+    minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   });
 };

@@ -1,11 +1,14 @@
 'use server';
 
+import { RegisterSchema } from "@/lib/zod";
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { put, del } from '@vercel/blob';
 import { getImagesById } from './data';
+import { hashSync } from "bcrypt-ts";
+// import { AuthError } from "next-auth";
 
 const EmployeeSchema = z.object({
   name: z.string().min(3),
@@ -13,6 +16,67 @@ const EmployeeSchema = z.object({
   phone: z.string().min(11),
   shift: z.string().min(5)
 });
+
+
+export const signUpCredentials = async (
+  prevState: unknown,
+  formData: FormData
+) => {
+  const validateFields = RegisterSchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
+
+  if (!validateFields.success) {
+    return {
+      error: validateFields.error.flatten().fieldErrors,
+    };
+  }
+  const { name, email, password } = validateFields.data;
+  const hashedPassword = hashSync(password, 10);
+
+  try {
+    await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
+    });
+  } catch (error) {
+    return { message: "Failed register" };
+  }
+  redirect("/login");
+};
+
+// export const signInCredentials = async (
+//   prevState: unknown,
+//   formData: FormData
+// ) => {
+//   const validateFields = SignInSchema.safeParse(
+//     Object.fromEntries(formData.entries())
+//   );
+//   console.log("Validation result:", validateFields);
+//   if (!validateFields.success) {
+//     return {
+//       error: validateFields.error.flatten().fieldErrors,
+//     };
+//   }
+//   const { email, password } = validateFields.data;
+
+//   try {
+//     await signIn("credentials", { email, password, redirectTo: "/dashboard" });
+//   } catch (error) {
+//     if (error instanceof AuthError) {
+//       switch (error.type) {
+//         case "CredentialsSignin":
+//           return { message: "Invalid Credentials" };
+//         default:
+//           return { message: "Something went wrong" };
+//       }
+//     }
+//     throw error;
+//   }
+// };
 
 const MenuSchema = z.object({
   nama: z.string().min(1),
@@ -44,6 +108,16 @@ const EditMenuSchema = z.object({
   keterangan: z.string().min(5),
 });
 
+export async function deleteTransaksi(id: string) {
+  try {
+    await prisma.transaksi.delete({
+      where: { id },
+    });
+    revalidatePath('/dashboard/transaksi');
+  } catch (error) {
+    throw new Error('Gagal menghapus transaksi');
+  }
+}
 
 export const saveEmployee = async (prevState: any, formData: FormData) => {
   const validateFields = EmployeeSchema.safeParse(
