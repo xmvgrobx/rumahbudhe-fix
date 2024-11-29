@@ -9,6 +9,20 @@ import React, { useState } from "react";
 
 
 
+export const CreateTransaksi = () => {
+  return (
+    <div className="mb-2 w-full text-right">
+      <Link
+        href="/transaksi/create"
+        className="btn btn-ghost bg-yellow-300 hover:bg-yellow-400"
+      >
+        <IoAddSharp size={20} />
+        Create
+      </Link>
+    </div>
+  );
+};
+
 export const CreateEmployee = () => {
   return (
     <div className="mb-2 w-full text-right">

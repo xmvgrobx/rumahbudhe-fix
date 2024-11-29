@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 
+
 export const getEmployee = async (query: string) => {
   try {
     const employee = await prisma.employee.findMany({

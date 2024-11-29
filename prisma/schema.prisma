@@ -15,9 +15,8 @@ datasource db {
 }
 
 enum Role {
-  user
-  owner
-  pegawai
+  OWNER
+  PEGAWAI
 }
 
 model Account {
@@ -57,11 +56,10 @@ model User {
   emailVerified DateTime? @map("email_verified")
   image         String?
   password      String
-  role          String    @default("user")
   accounts      Account[]
   sessions      Session[]
 
-  @@map("users")
+  role          Role    @default(OWNER)
 }
 
 model VerificationToken {

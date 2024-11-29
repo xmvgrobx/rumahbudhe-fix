@@ -22,3 +22,31 @@ export default function RootLayout({
     </html>
   );
 }
+
+// 'use client'
+
+// import { Inter } from 'next/font/google'
+// import { SessionProvider } from "next-auth/react"
+// import { ReactNode } from "react"
+// import '@/app/ui/global.css'
+
+// const inter = Inter({ subsets: ['latin'] })
+
+// interface RootLayoutProps {
+//   children: ReactNode;
+// }
+// // export const metadata = {
+// //   title: 'Rumah Budhe Coffee',
+// //   description: 'Great coffee everyday!'
+// // }
+// export default function RootLayout({ children }: RootLayoutProps) {
+//   return (
+//     <html lang="en">
+//       <body className={inter.className}>
+//         <SessionProvider>
+//           {children}
+//         </SessionProvider>
+//       </body>
+//     </html>
+//   )
+// }

@@ -10,31 +10,27 @@ interface MenuCardProps {
 
 const MenuCard: React.FC<MenuCardProps> = ({ data, addToCart }) => {
   return (
-    <div className="relative w-full max-w-[150px] max-h-[200px] bg-white rounded-md overflow-hidden shadow hover:shadow-md transition-shadow">
+    <div className="relative bg-white shadow-md rounded-lg overflow-hidden flex flex-col justify-between p-4 w-full max-w-sm mx-auto">
       {/* Image Container */}
-      <div className="relative w-full aspect-square">
+      <div className="w-full h-48 relative mb-4">
         <Image
           src={data.image}
           alt={data.nama}
-          fill
-          priority
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover"
+          layout="fill"
+          objectFit="cover"
+          className="rounded-t-lg"
         />
       </div>
 
       {/* Content Container */}
-      <div className="p-2">
+      <div className="flex flex-col items-center text-center">
         {/* Product Name */}
-        <h2
-          className="text-center text-xs font-medium text-gray-800 truncate"
-          title={data.nama}
-        >
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">
           {data.nama}
-        </h2>
+        </h3>
 
         {/* Price */}
-        <p className="text-center text-xs text-gray-700">
+        <p className="text-gray-600 text-sm mb-4">
           {formatCurrency(data.harga).replace('Rp ', '')}
         </p>
       </div>
@@ -42,7 +38,7 @@ const MenuCard: React.FC<MenuCardProps> = ({ data, addToCart }) => {
       {/* Add to Cart Button */}
       <button
         onClick={() => addToCart(data)}
-        className="absolute bottom-1 right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center text-black font-bold hover:bg-yellow-500 transition-colors"
+        className="absolute bottom-4 right-4 w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center text-black font-bold hover:bg-yellow-500 transition-colors"
         aria-label={`Tambah ${data.nama} ke keranjang`}
       >
         +
