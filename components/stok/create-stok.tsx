@@ -1,43 +1,42 @@
 "use client"
 
 import React, { useState } from 'react';
-import { EmployeeAddButton } from '@/components/buttons';
+import { StokAddButton } from '@/components/buttons';
 
-const CreateEmployee = () => {
+const CreateStok = () => {
   const [state, setState] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    shift: '',
+    nama: '',
+    jumlah: '',
+    harga: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setState((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "harga" ? parseFloat(value) || "" : value, // Konversi ke Float untuk harga
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { name, email, phone, shift } = state;
+    const { nama, jumlah, harga} = state;
 
     try {
-      const response = await fetch('/api/employee/create', {
+      const response = await fetch('/api/stok/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, email, phone, shift }),
+        body: JSON.stringify({ nama, jumlah, harga }),
       });
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Employee created successfully:', result);
+        console.log('Stok created successfully:', result);
         // Handle successful response, like resetting the form or showing success message
       } else {
-        console.error('Failed to create employee');
+        console.error('Failed to create stok');
       }
     } catch (error) {
       console.error('An error occurred:', error);
@@ -50,81 +49,63 @@ const CreateEmployee = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
             <label
-              htmlFor="name"
+              htmlFor="nama"
               className="block text-sm font-medium text-gray-800"
             >
-              Full Name
+              Nama Stok
             </label>
             <input
               type="text"
-              name="name"
-              id="name"
+              name="nama"
+              id="nama"
               className="input input-bordered w-full max-w-xs"
-              placeholder="Full Name..."
-              value={state.name}
+              placeholder="Nama stok dik..."
+              value={state.nama}
               onChange={handleChange}
             />
           </div>
 
           <div className="mb-5">
             <label
-              htmlFor="email"
+              htmlFor="jumlah"
               className="block text-sm font-medium text-gray-900"
             >
-              Email
+              Jumlah
             </label>
             <input
-              type="email"
-              name="email"
-              id="email"
+              type="text"
+              name="jumlah"
+              id="jumlah"
               className="input input-bordered w-full max-w-xs"
-              placeholder="Email..."
-              value={state.email}
+              placeholder="Jumlah..."
+              value={state.jumlah}
               onChange={handleChange}
             />
           </div>
 
           <div className="mb-5">
             <label
-              htmlFor="phone"
+              htmlFor="harga"
               className="block text-sm font-medium text-gray-900"
             >
-              Phone Number
+              Harga
             </label>
             <input
-              type="text"
-              name="phone"
-              id="phone"
+              type="number"
+              name="harga"
+              id="harga"
               className="input input-bordered w-full max-w-xs"
-              placeholder="Phone Number..."
-              value={state.phone}
+              placeholder="Harganye..."
+              value={state.harga}
               onChange={handleChange}
             />
           </div>
 
-          <div className="mb-5">
-            <label
-              htmlFor="shift"
-              className="block text-sm font-medium text-gray-900"
-            >
-              Jadwal Shift
-            </label>
-            <input
-              type="text"
-              name="shift"
-              id="shift"
-              className="input input-bordered w-full max-w-xs"
-              placeholder="Shift..."
-              value={state.shift}
-              onChange={handleChange}
-            />
-          </div>
-
-          <EmployeeAddButton label="Save" />
+          <StokAddButton label="Save" />
         </form>
       </div>
     </div>
   );
 };
 
-export default CreateEmployee;
+export default CreateStok;

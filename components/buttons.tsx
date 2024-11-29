@@ -37,30 +37,6 @@ export const CreateEmployee = () => {
   );
 };
 
-// export const DetailEmployee = ({ id }: { id: string }) => {
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-
-//   const handleOpenModal = () => {
-//     setIsModalOpen(true);
-//   };
-
-//   const handleCloseModal = () => {
-//     setIsModalOpen(false);
-//   };
-
-//   return (
-//     <>
-//       <button
-//         onClick={handleOpenModal}
-//         className="hover:bg-gray-100 rounded-sm"
-//       >
-//         <IoEye size={20} />
-//       </button>
-
-//       {isModalOpen && <Modal employeeId={id} onClose={handleCloseModal} />}
-//     </>
-//   );
-// };
 
 export const EditEmployee = ({ id }: { id: string }) => {
   return (
@@ -127,6 +103,108 @@ export const DeleteEmployee = ({ id }: { id: string }) => {
   );
 };
 
+export const CreateStok = () => {
+  return (
+    <div className="mb-2 w-full text-right">
+      <Link
+        href="/stok/create"
+        className="btn btn-ghost bg-yellow-200 hover:bg-yellow-300"
+      >
+        <IoAddSharp size={20} />
+        Create
+      </Link>
+    </div>
+  );
+};
+
+
+export const EditStok = ({ id }: { id: string }) => {
+  return (
+    <Link
+      href={`/stok/edit/${id}`}
+      className="hover-bg-gray-100 rounded-sm"
+    >
+      <IoPencil size={20} />
+    </Link>
+  );
+};
+
+export const DeleteStok = ({ id }: { id: string }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm('Yakin ingin menghapus stok ini?');
+    if (!confirmed) return;
+
+    setIsDeleting(true); // Mulai proses penghapusan
+
+    try {
+      const res = await fetch('/api/stok/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+
+      if (res.ok) {
+        alert('Stok berhasil dihapus');
+        window.location.reload(); // Reload halaman untuk memperbarui data
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Gagal menghapus stok');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Terjadi kesalahan saat menghapus stok');
+    } finally {
+      setIsDeleting(false); // Selesai proses penghapusan
+    }
+  };
+  return (
+    <form onSubmit={handleDelete}>
+      <button 
+        type="submit" 
+        className="hover-bg-gray-100 rounded-sm"
+        >
+        <IoTrashOutline className="w-5 text-red-500" />
+      </button>
+    </form>
+  );
+};
+
+export const StokAddButton = ({ label }: { label: string }) => {
+  const { pending } = useFormStatus();
+  const router = useRouter(); // Hook untuk navigasi
+  const className = clsx(
+    'text-white bg-yellow-200 hover:bg-yellow-300 font-medium rounded-lg text-sm w-80 px-5 py-3 text-center',
+    {
+      'opacity-50 cursor-progress': pending,
+    },
+  );
+
+  const handleSubmit = () => {
+    // Setelah submit selesai dan tidak ada error
+    if (!pending) {
+      router.push('/stok');
+    }
+  };
+
+  return (
+    <button
+      type="submit"
+      className={className}
+      disabled={pending}
+      onClick={handleSubmit} // Panggil handleSubmit setelah form submit
+    >
+      {label === 'save' ? (
+        <span>{pending ? 'Saving...' : 'Save'}</span>
+      ) : (
+        <span>{pending ? 'Saving...' : 'Save'}</span>
+      )}
+    </button>
+  );
+};
+
+
 export const SubmitButton = ({ label }: { label: string }) => {
   const { pending } = useFormStatus();
   const className = clsx(
@@ -147,7 +225,7 @@ export const SubmitButton = ({ label }: { label: string }) => {
   );
 };
 
-export const SubmitAddButton = ({ label }: { label: string }) => {
+export const EmployeeAddButton = ({ label }: { label: string }) => {
   const { pending } = useFormStatus();
   const router = useRouter(); // Hook untuk navigasi
   const className = clsx(
