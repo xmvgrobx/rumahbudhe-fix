@@ -4,6 +4,13 @@ import { z } from 'zod';
 const MAX_FILE_SIZE = 5000000; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
+export const EmployeeSchema = z.object({
+  name: z.string().min(3),
+  email: z.string().min(5),
+  phone: z.string().min(11),
+  shift: z.string().min(5)
+});
+
 export const RegisterSchema = z.object({
   name: z.string().min(1, "Name must be more than 1 character!"),
   email: z.string().email("Invalid email"),

@@ -84,7 +84,7 @@ model Menu {
 
 }
 
-  model Employee {
+model Employee {
   id String @id @default(cuid())
   name String
   email String

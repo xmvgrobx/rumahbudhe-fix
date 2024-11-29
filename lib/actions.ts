@@ -1,4 +1,4 @@
-'use server';
+'use server'
 
 import { RegisterSchema } from "@/lib/zod";
 import { z } from 'zod';
@@ -16,7 +16,33 @@ const EmployeeSchema = z.object({
   phone: z.string().min(11),
   shift: z.string().min(5)
 });
+export const createEmployee = async (formData: FormData) => {
+  const data = Object.fromEntries(formData.entries());
+  const validation = EmployeeSchema.safeParse(data);
 
+  if (!validation.success) {
+    const errorData = new FormData();
+    errorData.append(
+      "error",
+      JSON.stringify(validation.error.flatten().fieldErrors)
+    );
+    return errorData; // Mengembalikan FormData untuk error
+  }
+
+  try {
+    await prisma.employee.create({
+      data: validation.data,
+    });
+
+    const successData = new FormData();
+    successData.append("message", "Employee created successfully");
+    return successData; // Mengembalikan FormData untuk sukses
+  } catch (error) {
+    const errorData = new FormData();
+    errorData.append("error", "Failed to create employee");
+    return errorData; // Mengembalikan FormData untuk error
+  }
+};
 
 export const signUpCredentials = async (
   prevState: unknown,

@@ -1,13 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { IoAddSharp, IoPencil, IoTrashOutline } from 'react-icons/io5';
+import { IoAddSharp, IoPencil, IoTrashOutline, IoEye } from 'react-icons/io5';
 import { useFormStatus } from 'react-dom';
 import clsx from 'clsx';
 import { deleteEmployee, deleteImage, deleteTransaksi } from '@/lib/actions';
 import React, { useState } from "react";
-
-
+import { useRouter } from 'next/navigation';
+import Modal from './employee/detail-employee';
 
 export const CreateTransaksi = () => {
   return (
@@ -37,11 +37,36 @@ export const CreateEmployee = () => {
   );
 };
 
+// export const DetailEmployee = ({ id }: { id: string }) => {
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+
+//   const handleOpenModal = () => {
+//     setIsModalOpen(true);
+//   };
+
+//   const handleCloseModal = () => {
+//     setIsModalOpen(false);
+//   };
+
+//   return (
+//     <>
+//       <button
+//         onClick={handleOpenModal}
+//         className="hover:bg-gray-100 rounded-sm"
+//       >
+//         <IoEye size={20} />
+//       </button>
+
+//       {isModalOpen && <Modal employeeId={id} onClose={handleCloseModal} />}
+//     </>
+//   );
+// };
+
 export const EditEmployee = ({ id }: { id: string }) => {
   return (
     <Link
       href={`/employee/edit/${id}`}
-      className="hover-bg-gray-100 rounded-sm border p-1"
+      className="hover-bg-gray-100 rounded-sm"
     >
       <IoPencil size={20} />
     </Link>
@@ -49,14 +74,56 @@ export const EditEmployee = ({ id }: { id: string }) => {
 };
 
 export const DeleteEmployee = ({ id }: { id: string }) => {
-  const DeleteEmployeeWithId = deleteEmployee.bind(null, id);
+  const [isDeleting, setIsDeleting] = useState(false);
 
+  const handleDelete = async () => {
+    const confirmed = window.confirm('Yakin ingin menghapus pegawai ini?');
+    if (!confirmed) return;
+
+    setIsDeleting(true); // Mulai proses penghapusan
+
+    try {
+      const res = await fetch('/api/employee/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+
+      if (res.ok) {
+        alert('Pegawai berhasil dihapus');
+        window.location.reload(); // Reload halaman untuk memperbarui data
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Gagal menghapus pegawai');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Terjadi kesalahan saat menghapus pegawai');
+    } finally {
+      setIsDeleting(false); // Selesai proses penghapusan
+    }
+  };
   return (
-    <form action={DeleteEmployeeWithId}>
-      <button className="hover-bg-gray-100 rounded-sm border p-1">
-        <IoTrashOutline size={20} />
+    <form onSubmit={handleDelete}>
+      <button 
+        type="submit" 
+        className="hover-bg-gray-100 rounded-sm"
+        >
+        <IoTrashOutline className="text-red-500" />
       </button>
     </form>
+  // return (
+  //   <button
+  //     onClick={handleDelete}
+  //     className={`py-3 text-sm rounded-bl-md w-full text-center ${
+  //       isDeleting
+  //         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+  //         : 'bg-gray-50 hover:bg-gray-100'
+  //     }`}
+  //     disabled={isDeleting} // Nonaktifkan tombol saat proses berjalan
+  //   >
+  //     {isDeleting ? 'Deleting...' : 'Delete'}
+  //   </button>
   );
 };
 
@@ -80,6 +147,39 @@ export const SubmitButton = ({ label }: { label: string }) => {
   );
 };
 
+export const SubmitAddButton = ({ label }: { label: string }) => {
+  const { pending } = useFormStatus();
+  const router = useRouter(); // Hook untuk navigasi
+  const className = clsx(
+    'text-white bg-yellow-200 hover:bg-yellow-300 font-medium rounded-lg text-sm w-80 px-5 py-3 text-center',
+    {
+      'opacity-50 cursor-progress': pending,
+    },
+  );
+
+  const handleSubmit = () => {
+    // Setelah submit selesai dan tidak ada error
+    if (!pending) {
+      // Redirect ke halaman /employee setelah form berhasil disubmit
+      router.push('/employee');
+    }
+  };
+
+  return (
+    <button
+      type="submit"
+      className={className}
+      disabled={pending}
+      onClick={handleSubmit} // Panggil handleSubmit setelah form submit
+    >
+      {label === 'save' ? (
+        <span>{pending ? 'Saving...' : 'Save'}</span>
+      ) : (
+        <span>{pending ? 'Saving...' : 'Save'}</span>
+      )}
+    </button>
+  );
+};
 
 export function EditTransaksi({ id }: { id: string }) {
   return (

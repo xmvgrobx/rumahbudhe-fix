@@ -1,4 +1,4 @@
-import CreateEmployee from '@/components/create-employee'
+import CreateEmployee from '@/components/employee/create-employee'
 import React from 'react'
 
 const CreateEmployeePage = () => {

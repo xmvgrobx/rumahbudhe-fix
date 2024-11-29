@@ -1,23 +1,16 @@
-import UpdateEmployee from '@/components/edit-employee'
-import { getEmployeeById } from '@/lib/data'
-import { notFound } from 'next/navigation';
-import React from 'react'
+import React from "react";
+import EditEmployee from "@/components/employee/edit-employee"; // Path ke form edit yang sudah dibuat
 
-const UpdateEmployeePage = async({params}: {params:{id: string}}) => {
-    const id = params.id;
-    const employee = await getEmployeeById(id);
-  
+const EditEmployeePage = ({ params }: { params: { id: string } }) => {
+  const { id } = params;
 
-    if(!employee){
-        notFound();
-    }
-
-    return (
-    <div className='max-e-md mx-auto mt-5'>
-        <h1 className='text-2xl text-center mb-2'>Update Employee</h1>
-        <UpdateEmployee employee={employee}/>
+  return (
+    <div>
+      <h1 className="text-xl font-bold mb-4">Edit Employee</h1>
+      {/* Kirimkan ID employee ke komponen edit */}
+      <EditEmployee id={id} />
     </div>
-  )
-}
+  );
+};
 
-export default UpdateEmployeePage
+export default EditEmployeePage;
