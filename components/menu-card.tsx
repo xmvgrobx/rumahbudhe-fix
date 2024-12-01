@@ -8,7 +8,7 @@ const MenuCard = ({ data }: { data: Menu }) => {
     return (
         <div className="w-64 border border-gray-200 rounded-lg shadow-lg">
   {/* Bagian Gambar Produk */}
-  <div className="relative w-full h-48">
+  {/* <div className="relative w-full h-48">
     <Image
       src={data.image}
       alt={data.nama}
@@ -17,7 +17,7 @@ const MenuCard = ({ data }: { data: Menu }) => {
       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       className="rounded-t-lg object-cover"
     />
-  </div>
+  </div> */}
 
   {/* Nama Produk */}
   <div className="px-4 py-2">
