@@ -38,14 +38,7 @@ export const MenuSchema = z.object({
     .min(1, { message: "Nama menu wajib diisi" })
     .max(100, { message: "Nama menu terlalu panjang" }),
 
-  image: z
-    .instanceof(File)
-    .refine((file) => file.size <= MAX_FILE_SIZE, {
-      message: `Ukuran file maksimal 5MB`,
-    })
-    .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
-      message: "Format file harus berupa .jpg, .jpeg, .png atau .webp",
-    }),
+
 
   harga: z
     .string()
@@ -62,6 +55,9 @@ export const MenuSchema = z.object({
     .string()
     .min(1, { message: "Keterangan wajib diisi" })
     .max(500, { message: "Keterangan terlalu panjang" }),
+
+    createdAt: z.date().optional(),
+    updatedAt: z.date().optional(),
 });
 
 // This type can be used for TypeScript type safety

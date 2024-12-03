@@ -1,11 +1,11 @@
 import React from 'react';
 import Image from 'next/image';
-import type { Menu } from "@prisma/client";
+import type { Lemenu } from "@prisma/client";
 import { formatCurrency } from '@/lib/utils';
 
 interface MenuCardProps {
-  data: Menu;
-  addToCart: (item: Menu) => void;
+  data: Lemenu;
+  addToCart: (item: Lemenu) => void;
 }
 
 const MenuCard: React.FC<MenuCardProps> = ({ data, addToCart }) => {
@@ -13,13 +13,13 @@ const MenuCard: React.FC<MenuCardProps> = ({ data, addToCart }) => {
     <div className="relative bg-white shadow-md rounded-lg overflow-hidden flex flex-col justify-between p-4 w-full max-w-sm mx-auto">
       {/* Image Container */}
       <div className="w-full h-48 relative mb-4">
-        <Image
+        {/* <Image
           src={data.image}
           alt={data.nama}
           layout="fill"
           objectFit="cover"
           className="rounded-t-lg"
-        />
+        /> */}
       </div>
 
       {/* Content Container */}

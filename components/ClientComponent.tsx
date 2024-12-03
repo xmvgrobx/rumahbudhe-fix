@@ -53,109 +53,84 @@
 //   );
 // };
 
-// export default ClientComponent;
+// export default ClientComponent;"use client";
+
+
 
 "use client";
 
 import React, { useState } from "react";
-import type { Menu } from "@prisma/client";
-import MenuCard from "@/components/menu-transaksi";
-import CartModal from "@/components/cart-modal";
-import CheckoutModal from "@/components/co-modal";
+import type { Lemenu } from "@prisma/client";
+import CheckoutModal from "@/components/co-modal"; // Pastikan ini adalah modal checkout
 import { IoCart } from "react-icons/io5";
 
-
-const ClientComponent = ({ images }: { images: Menu[] }) => {
-  const [cartItems, setCartItems] = useState<
-    { id: string; quantity: number; nama: string; image: string; harga: number }[]
-  >([]);
-  const [showCartModal, setShowCartModal] = useState(false);
+const ClientComponent = ({ menus }: { menus: Lemenu[] }) => {
+  const [cartItems, setCartItems] = useState<{
+    id: string;
+    quantity: number;
+    nama: string;
+    harga: number;
+  }[]>([]);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
 
-  const addToCart = (item: Menu) => {
-    setCartItems((prev) => {
-      const existingItem = prev.find((cartItem) => cartItem.id === item.id);
-      if (existingItem) {
-        return prev.map((cartItem) =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        );
+  // Fungsi untuk menambah item langsung ke pembayaran
+  const addToCheckout = (item: Lemenu) => {
+    setCartItems((prevItems) => {
+      const existingItemIndex = prevItems.findIndex(
+        (cartItem) => cartItem.id === item.id
+      );
+      if (existingItemIndex !== -1) {
+        const updatedItems = [...prevItems];
+        updatedItems[existingItemIndex].quantity += 1; // Menambah quantity jika item sudah ada
+        return updatedItems;
       }
-      return [...prev, { ...item, quantity: 1 }];
+      return [
+        ...prevItems,
+        {
+          ...item,
+          quantity: 1,  // Asumsi satu barang ditambahkan per klik
+        },
+      ];
     });
-  };
-
-  const removeFromCart = (id: string) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const clearCart = () => {
-    setCartItems([]);
-  };
-
-  const handleOpenCartModal = () => {
-    setShowCartModal(true);
-  };
-
-  const handleCloseCartModal = () => {
-    setShowCartModal(false);
-  };
-
-  const handleOpenCheckoutModal = () => {
-    setShowCheckoutModal(true);
+    setShowCheckoutModal(true);  // Langsung buka modal pembayaran
   };
 
   const handleCloseCheckoutModal = () => {
     setShowCheckoutModal(false);
   };
 
+  // Fungsi untuk menghapus semua item di keranjang setelah checkout
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
   return (
     <div>
       {/* Grid untuk menampilkan menu */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6 px-4">
-        {images.map((item) => (
-          <MenuCard key={item.id} data={item} addToCart={addToCart} />
+        {menus?.map((item) => (
+          <div key={item.id} className="border p-4 rounded shadow-lg">
+            <h3 className="font-semibold text-lg">{item.nama}</h3>
+            <p className="text-gray-600">Rp {item.harga}</p>
+            <button
+              onClick={() => addToCheckout(item)} // Menambah item dan langsung ke checkout
+              className="bg-yellow-400 p-2 rounded mt-2 hover:bg-yellow-500"
+            >
+              Add to Checkout
+            </button>
+          </div>
         ))}
       </div>
 
-      {/* Komponen Keranjang */}
-
-      <div className="fixed top-4 right-4 z-50">
-        <button
-          className="bg-yellow-400 p-2 rounded-full hover:bg-yellow-500 relative shadow-lg"
-          onClick={handleOpenCartModal}
-          aria-label="Lihat Keranjang"
-        >
-          <IoCart className="text-2xl text-black" />
-          {cartItems.length > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-              {cartItems.length}
-            </span>
-          )}
-        </button>
-
-        {showCartModal && (
-          <CartModal
-            cartItems={cartItems}
-            removeFromCart={removeFromCart}
-            clearCart={clearCart}
-            onClose={handleCloseCartModal}
-            onCheckout={handleOpenCheckoutModal}
-          />
-        )}
-
-        {showCheckoutModal && (
-          <CheckoutModal
-            cartItems={cartItems}
-            clearCart={clearCart}
-            onClose={handleCloseCheckoutModal}
-          />
-        )}
-      </div>
+      {/* Modal Checkout */}
+      {showCheckoutModal && (
+        <CheckoutModal
+          cartItems={cartItems}
+          onClose={handleCloseCheckoutModal}
+          clearCart={clearCart} // Implementasi clearCart
+        />
+      )}
     </div>
-   
-
   );
 };
 

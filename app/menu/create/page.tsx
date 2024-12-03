@@ -1,4 +1,4 @@
-import CreateMenu from '@/components/create-menu';
+import CreateMenu from '@/components/menu/create-menu';
 import React from 'react'
 
 const CreateMenuPage = () => {

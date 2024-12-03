@@ -14,76 +14,6 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-enum Role {
-  OWNER
-  PEGAWAI
-}
-
-model Account {
-  id                String  @id @default(cuid())
-  userId            String  @map("user_id")
-  type              String
-  provider          String
-  providerAccountId String  @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@map("accounts")
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique @map("session_token")
-  userId       String   @map("user_id")
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("sessions")
-}
-
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
-  image         String?
-  password      String
-  accounts      Account[]
-  sessions      Session[]
-
-  role          Role    @default(OWNER)
-}
-
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
-
-  @@unique([identifier, token])
-  @@map("verification_tokens")
-}
-
-model Menu {
-  id String @id @default(cuid())
-  nama String
-  image String
-  harga Float
-  keterangan String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  transaksiDetail Detail[]
-
-}
-
 model Employee {
   id String @id @default(cuid())
   name String
@@ -94,15 +24,33 @@ model Employee {
   updatedAt DateTime @updatedAt
 }
 
+model Menu{
+  id String   @id @default(cuid())
+  nama String
+  harga Float
+  keterangan String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Lemenu {
+  id          String    @id @default(cuid())
+  nama        String
+  harga       Float
+  keterangan  String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  detail      Detail[]  // Relasi dengan transaksi detail
+}
+
 model Transaksi {
   id                String   @id @default(cuid())
-  totalHarga       Float
+  totalHarga        Float
   jumlah            Float
   catatan           String   @db.VarChar(250)
   metodeBayar       String   @db.VarChar(100)
   tanggal           DateTime @default(now())
 
-  transaksiDetail Detail[]
+  transaksiDetail   Detail[]  // Relasi dengan detail transaksi
 }
 
 model Detail {
@@ -113,9 +61,8 @@ model Detail {
   subtotal     Float
 
   transaksi    Transaksi @relation(fields: [transaksiId], references: [id])
-  menu         Menu      @relation(fields: [menuId], references: [id])
+  menu         Lemenu    @relation(fields: [menuId], references: [id])  // Menambahkan relasi ke Lemenu
 }
-
 
 model Kode {
   id         String   @id @default(cuid())

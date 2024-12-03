@@ -259,6 +259,40 @@ export const EmployeeAddButton = ({ label }: { label: string }) => {
   );
 };
 
+export const MenuAddButton = ({ label }: { label: string }) => {
+  const { pending } = useFormStatus();
+  const router = useRouter(); // Hook untuk navigasi
+  const className = clsx(
+    'text-white bg-yellow-200 hover:bg-yellow-300 font-medium rounded-lg text-sm w-80 px-5 py-3 text-center',
+    {
+      'opacity-50 cursor-progress': pending,
+    },
+  );
+
+  const handleSubmit = () => {
+    // Setelah submit selesai dan tidak ada error
+    if (!pending) {
+      // Redirect ke halaman /employee setelah form berhasil disubmit
+      router.push('/menu');
+    }
+  };
+
+  return (
+    <button
+      type="submit"
+      className={className}
+      disabled={pending}
+      onClick={handleSubmit} // Panggil handleSubmit setelah form submit
+    >
+      {label === 'save' ? (
+        <span>{pending ? 'Saving...' : 'Save'}</span>
+      ) : (
+        <span>{pending ? 'Saving...' : 'Save'}</span>
+      )}
+    </button>
+  );
+};
+
 export function EditTransaksi({ id }: { id: string }) {
   return (
     <Link

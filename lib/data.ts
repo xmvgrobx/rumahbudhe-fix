@@ -1,5 +1,23 @@
 import { prisma } from '@/lib/prisma';
 
+// Contoh fungsi getMenus yang diubah
+
+export async function getMenus() {
+  // Ambil data menu dari database tanpa kolom gambar
+  const menus = await prisma.lemenu.findMany({
+    select: {
+      id: true,
+      nama: true,
+      harga: true,
+      keterangan: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  return menus;
+}
+
 
 export const getEmployee = async (query: string) => {
   try {
