@@ -108,3 +108,86 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
   ];
 };
 
+// utils/pdfGenerator.ts
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { format } from "date-fns";
+
+interface ReportItem {
+  date: string;
+  paymentMethod: string;
+  subtotal: number;
+  discount: number;
+  total: number;
+}
+
+interface ReportSummary {
+  totalTransactions: number;
+  totalRevenue: number;
+  totalDiscount: number;
+}
+
+interface ReportData {
+  transactions: ReportItem[];
+  summary: ReportSummary;
+  period: {
+    type: string;
+    startDate: string | Date;
+    endDate: string | Date;
+  };
+}
+
+export const generateTransactionPDF = (data: any) => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.width;
+
+  // Add title
+  doc.setFontSize(20);
+  doc.text("Transaction Report", pageWidth / 2, 15, { align: "center" });
+
+  // Add period info
+  doc.setFontSize(12);
+  doc.text(
+    `Period: ${format(new Date(data.period.startDate), 'dd/MM/yyyy')} - ${format(new Date(data.period.endDate), 'dd/MM/yyyy')}`,
+    pageWidth / 2,
+    25,
+    { align: "center" }
+  );
+
+  // Add summary
+  doc.setFontSize(12);
+  const summary = [
+    [`Total Transactions: ${data.summary.totalTransactions}`],
+    [`Total Revenue: Rp ${data.summary.totalRevenue.toLocaleString()}`],
+    [`Total Discount: Rp ${data.summary.totalDiscount.toLocaleString()}`],
+  ];
+
+  // Add summary table starting at y=35
+  autoTable(doc, {
+    startY: 35,
+    head: [["Summary"]],
+    body: summary,
+    theme: "grid",
+  });
+
+  // Add transactions table starting 10 units below the summary table
+  const tableBody = data.transactions.map((t: any) => [
+    t.date,
+    t.paymentMethod,
+    `Rp ${t.subtotal.toLocaleString()}`,
+    `Rp ${t.discount.toLocaleString()}`,
+    `Rp ${t.total.toLocaleString()}`,
+  ]);
+
+  // Get the final Y position of the previous table
+  const finalY = (doc as any).previousAutoTable.finalY || 35;
+
+  autoTable(doc, {
+    startY: finalY + 10,
+    head: [["Date", "Payment", "Subtotal", "Discount", "Total"]],
+    body: tableBody,
+    theme: "grid",
+  });
+
+  return doc;
+};

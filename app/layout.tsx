@@ -47,7 +47,7 @@ export default function RootLayout({ children }: LayoutProps) {
         <head>
           <meta charSet="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <title>My Next.js App</title>
+          <title>Rumah Budhe Coffee</title>
         </head>
          <body className={`${inter.className} antialiased`}>{children}</body>
 

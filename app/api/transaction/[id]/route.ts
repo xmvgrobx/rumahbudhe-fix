@@ -1,23 +1,23 @@
-// app/api/transaction/[id]/route.ts
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
+import { Prisma, PaymentMethod } from '@prisma/client';
 
-// GET endpoint
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
     const transaction = await prisma.transaction.findUnique({
-      where: { id: params.id },
+      where: { 
+        id: params.id 
+      },
       include: {
         items: {
           include: {
             menu: true
           }
         }
-      },
+      }
     });
 
     if (!transaction) {
@@ -30,6 +30,16 @@ export async function GET(
     return NextResponse.json(transaction);
   } catch (error) {
     console.error('Error fetching transaction:', error);
+    
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2025') {
+        return NextResponse.json(
+          { error: 'Transaction not found' },
+          { status: 404 }
+        );
+      }
+    }
+    
     return NextResponse.json(
       { error: 'Error fetching transaction' },
       { status: 500 }
@@ -37,7 +47,6 @@ export async function GET(
   }
 }
 
-// PUT endpoint
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
@@ -48,6 +57,8 @@ export async function PUT(
       items,
       note,
       paymentMethod,
+      cash,
+      change,
       referralCode,
       discount,
     } = body;
@@ -60,23 +71,47 @@ export async function PUT(
       );
     }
 
+    // Fetch menu items to get their current prices
+    const menuIds = items.map(item => item.menuId);
+    const menus = await prisma.menu.findMany({
+      where: {
+        id: {
+          in: menuIds
+        }
+      }
+    });
+
+    // Create a map of menu prices
+    const menuPrices = new Map(
+      menus.map(menu => [menu.id, menu.price])
+    );
+
     // Update the transaction
     const updatedTransaction = await prisma.transaction.update({
       where: { id: params.id },
       data: {
         note,
-        paymentMethod,
+        paymentMethod: paymentMethod as PaymentMethod,
+        cash: cash ? new Prisma.Decimal(cash) : null,
+        change: change ? new Prisma.Decimal(change) : null,
         referralCode,
-        discount,
+        discount: new Prisma.Decimal(discount || 0),
         items: {
           deleteMany: {}, // Remove existing items
-          create: items.map((item) => ({
-            quantity: item.quantity,
-            price: item.price,
-            menu: {
-              connect: { id: item.menuId }
+          create: items.map((item) => {
+            const menuPrice = menuPrices.get(item.menuId);
+            if (!menuPrice) {
+              throw new Error(`Price not found for menu item: ${item.menuId}`);
             }
-          })),
+            
+            return {
+              quantity: item.quantity,
+              price: new Prisma.Decimal(menuPrice), // Use current menu price
+              menu: {
+                connect: { id: item.menuId }
+              }
+            };
+          }),
         },
       },
       include: {
@@ -103,36 +138,6 @@ export async function PUT(
     
     return NextResponse.json(
       { error: 'Error updating transaction' },
-      { status: 500 }
-    );
-  }
-}
-
-// DELETE endpoint
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  try {
-    await prisma.transaction.delete({
-      where: { id: params.id },
-    });
-
-    return new NextResponse(null, { status: 204 });
-  } catch (error) {
-    console.error('Error deleting transaction:', error);
-    
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === 'P2025') {
-        return NextResponse.json(
-          { error: 'Transaction not found' },
-          { status: 404 }
-        );
-      }
-    }
-    
-    return NextResponse.json(
-      { error: 'Error deleting transaction' },
       { status: 500 }
     );
   }

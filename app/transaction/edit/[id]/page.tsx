@@ -17,7 +17,7 @@ const EditTransactionPage = ({
 
   const handleSuccess = (updatedData: any) => {
     alert('Transaction updated successfully');
-    router.push('/transactions'); // or wherever your transactions list is
+    router.push('/transaction'); // or wherever your transactions list is
   };
 
   return (

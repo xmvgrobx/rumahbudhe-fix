@@ -91,7 +91,7 @@ const TransactionTable = async () => {
               <td className="py-3 px-6">{item.quantity}</td>
               <td className="py-3 px-6">{formatCurrency(item.price.toNumber())}</td>
               <td className="flex justify-center gap-1 py-3">
-              {/* <DetailTransaksi id={tr.id}/> */}
+              <DetailTransaksi id={tr.id}/>
               <EditTransaksi id={tr.id}/>
               <DeleteTransaksi id={tr.id}/>
             </td>

@@ -101,12 +101,12 @@ const EditCheckoutForm: React.FC<EditCheckoutFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (paymentMethod === 'CASH' && parseFloat(cashAmount) < discountedTotal) {
       alert('Insufficient cash amount');
       return;
     }
-
+  
     setLoading(true);
     try {
       const response = await fetch(`/api/transaction/${id}`, {
@@ -117,26 +117,28 @@ const EditCheckoutForm: React.FC<EditCheckoutFormProps> = ({
         body: JSON.stringify({
           items: cartItems.map((item) => ({
             menuId: item.menu.id,
-            quantity: item.quantity,
+            quantity: item.quantity
+            // price will be fetched from the menu in the API
           })),
           note,
           paymentMethod,
-          cashAmount: paymentMethod === 'CASH' ? parseFloat(cashAmount) : null,
+          cash: paymentMethod === 'CASH' ? parseFloat(cashAmount) : null,
           change: paymentMethod === 'CASH' ? change : null,
           referralCode: referralValid ? referralCode : null,
-          discount: referralValid ? referralDiscount : 0,
+          discount: referralValid ? referralDiscount : 0
         }),
       });
-
+  
       if (!response.ok) {
-        throw new Error('Failed to update transaction');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update transaction');
       }
-
+  
       const updatedData = await response.json();
       onSuccess(updatedData);
     } catch (error) {
       console.error('Update error:', error);
-      alert('Error updating transaction');
+      alert(error instanceof Error ? error.message : 'Error updating transaction');
     } finally {
       setLoading(false);
     }
