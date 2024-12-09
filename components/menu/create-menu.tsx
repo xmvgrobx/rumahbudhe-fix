@@ -1,314 +1,188 @@
-// "use client";
-// import React from "react";
-// import { uploadMenu } from "@/lib/actions";
-// import { useFormState } from "react-dom";
-// import { SubmitButtonMenu } from "@/components/buttons";
-
-// const CreateForm = () => {
-//   const [state, formAction] = useFormState(uploadMenu, null);
-
-//   return (
-//     <form action={formAction}>
-//       {/* Alert */}
-//       {state?.message ? (
-//         <div
-//           className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50"
-//           role="alert"
-//         >
-//           <div className="font-medium">{state?.message}</div>
-//         </div>
-//       ) : null}
-
-//       <div className="mb-4 pt-2">
-//         <input
-//           type="text"
-//           name="nama"
-//           className="py-2 px-4 rounded-sm border border-gray-400 w-full"
-//           placeholder="Nama..."
-//         />
-//         <div aria-live="polite" aria-atomic="true">
-//           <p className="text-sm text-red-500 mt-2">{state?.error?.nama}</p>
-//         </div>
-//       </div>
-//       <div className="mb-4 pt-2">
-//         <input
-//           type="file"
-//           name="image"
-//           className="file:py-2 file:px-4 file:mr-4 file:rounded-sm file:border-0 file:bg-gray-200 hover:file:bg-gray-300 file:cursor-pointer border border-gray-400 w-full"
-//         />
-//         <div aria-live="polite" aria-atomic="true">
-//           <p className="text-sm text-red-500 mt-2">{state?.error?.image}</p>
-//         </div>
-//       </div>
-
-//       <div className="mb-4 pt-2">
-//         <input
-//           type="number"
-//           name="harga"
-//           className="py-2 px-4 rounded-sm border border-gray-400 w-full"
-//           placeholder="Harga..."
-//         />
-//         <div aria-live="polite" aria-atomic="true">
-//           <p className="text-sm text-red-500 mt-2">{state?.error?.harga}</p>
-//         </div>
-//       </div>
-
-//       <div className="mb-4 pt-2">
-//         <input
-//           type="text"
-//           name="keterangan"
-//           className="py-2 px-4 rounded-sm border border-gray-400 w-full"
-//           placeholder="Keterangan..."
-//         />
-//         <div aria-live="polite" aria-atomic="true">
-//           <p className="text-sm text-red-500 mt-2">{state?.error?.keterangan}</p>
-//         </div>
-//       </div>
-
-//       <div className="mb-4 pt-4">
-//         <SubmitButtonMenu label="upload" />
-//       </div>
-//     </form>
-//   );
-// };
-
-// export default CreateForm;
-
-// 'use client';
-// import React, { useState } from 'react';
-// import { useRouter } from 'next/navigation';
-// import { SubmitButtonMenu } from '@/components/buttons';
-
-// const CreateForm = () => {
-//   const router = useRouter();
-//   const [error, setError] = useState<any>(null);
-//   const [message, setMessage] = useState<string | null>(null);
-//   const [isSubmitting, setIsSubmitting] = useState(false);
-
-//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-//     setIsSubmitting(true);
-//     setError(null);
-//     setMessage(null);
-
-//     try {
-//       const formData = new FormData(e.currentTarget);
-      
-//       const response = await fetch('/api/menu/create', {
-//         method: 'POST',
-//         body: formData,
-//       });
-
-//       const data = await response.json();
-
-//       if (!response.ok) {
-//         setError(data.error);
-//         return;
-//       }
-
-//       setMessage(data.message);
-//       router.push('/menu');
-//       router.refresh();
-//     } catch (err) {
-//       setError('An error occurred while creating the menu');
-//     } finally {
-//       setIsSubmitting(false);
-//     }
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit}>
-//       {/* Alert */}
-//       {message && (
-//         <div
-//           className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50"
-//           role="alert"
-//         >
-//           <div className="font-medium">{message}</div>
-//         </div>
-//       )}
-
-//       {error?.message && (
-//         <div
-//           className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50"
-//           role="alert"
-//         >
-//           <div className="font-medium">{error.message}</div>
-//         </div>
-//       )}
-
-//       <div className="mb-4 pt-2">
-//         <input
-//           type="text"
-//           name="nama"
-//           className="py-2 px-4 rounded-sm border border-gray-400 w-full"
-//           placeholder="Nama..."
-//         />
-//         <div aria-live="polite" aria-atomic="true">
-//           <p className="text-sm text-red-500 mt-2">{error?.nama}</p>
-//         </div>
-//       </div>
-
-//       <div className="mb-4 pt-2">
-//         <input
-//           type="file"
-//           name="image"
-//           className="file:py-2 file:px-4 file:mr-4 file:rounded-sm file:border-0 file:bg-gray-200 hover:file:bg-gray-300 file:cursor-pointer border border-gray-400 w-full"
-//         />
-//         <div aria-live="polite" aria-atomic="true">
-//           <p className="text-sm text-red-500 mt-2">{error?.image}</p>
-//         </div>
-//       </div>
-
-//       <div className="mb-4 pt-2">
-//         <input
-//           type="number"
-//           name="harga"
-//           className="py-2 px-4 rounded-sm border border-gray-400 w-full"
-//           placeholder="Harga..."
-//         />
-//         <div aria-live="polite" aria-atomic="true">
-//           <p className="text-sm text-red-500 mt-2">{error?.harga}</p>
-//         </div>
-//       </div>
-
-//       <div className="mb-4 pt-2">
-//         <input
-//           type="text"
-//           name="keterangan"
-//           className="py-2 px-4 rounded-sm border border-gray-400 w-full"
-//           placeholder="Keterangan..."
-//         />
-//         <div aria-live="polite" aria-atomic="true">
-//           <p className="text-sm text-red-500 mt-2">{error?.keterangan}</p>
-//         </div>
-//       </div>
-
-//       <div className="mb-4 pt-4">
-//         <SubmitButtonMenu 
-//           label={isSubmitting ? "Uploading..." : "Upload"} 
-//           disabled={isSubmitting}
-//         />
-//       </div>
-//     </form>
-//   );
-// };
-
-// export default CreateForm;
-
-"use client"
+'use client';
 
 import React, { useState } from 'react';
-import { MenuAddButton } from '@/components/buttons';
+import { useRouter } from 'next/navigation';
 
-const CreateMenu = () => {
-  const [state, setState] = useState({
-    nama: '',
-    harga: '',
-    keterangan: '',
+interface FormErrors {
+  name?: string;
+  price?: string;
+  description?: string;
+  image?: string;
+  general?: string;
+}
+
+const CreateMenuForm = () => {
+  const router = useRouter();
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [message, setMessage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: '',
+    price: '',
+    description: '',
   });
+  const [image, setImage] = useState<File | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setState((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      [name]: value,
+      [name]: value
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const { nama, harga, keterangan } = state;
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setImage(files[0]);
+    }
+  };
 
-    const hargaFloat = parseFloat(harga);
-    if (isNaN(hargaFloat)) {
-      console.error('Invalid harga value');
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+
+    if (!formData.price.trim()) {
+      newErrors.price = 'Price is required';
+    }
+
+    if (!image) {
+      newErrors.image = 'Image is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrors({});
+    setMessage(null);
+
+    if (!validateForm()) {
+      setIsSubmitting(false);
       return;
+    }
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('name', formData.name);
+    formDataToSend.append('price', formData.price);
+    formDataToSend.append('description', formData.description || '');
+    
+    if (image) {
+      formDataToSend.append('image', image);
     }
 
     try {
       const response = await fetch('/api/menu/create', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      body: JSON.stringify({ nama, harga: hargaFloat, keterangan }), // Send harga as a float
+        body: formDataToSend,
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Menu created successfully:', result);
-      } else {
-        console.error('Failed to create menu');
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrors({ 
+          general: data.error || 'An error occurred while creating the menu' 
+        });
+        return;
       }
-    } catch (error) {
-      console.error('An error occurred:', error);
+
+      setMessage(data.message || 'Menu item created successfully!');
+      router.push('/menu');
+    } catch (err) {
+      setErrors({ 
+        general: 'An error occurred while creating the menu' 
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="mx-auto mt-5 max-w-md">
-      <div>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-5">
-            <label
-              htmlFor="nama"
-              className="block text-sm font-medium text-gray-800"
-            >
-              Nama Menu
-            </label>
-            <input
-              type="text"
-              name="nama"
-              id="nama"
-              className="input input-bordered w-full max-w-xs"
-              placeholder="Nama menu..."
-              value={state.nama}
-              onChange={handleChange}
-            />
+    <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg">
+      <h2 className="text-2xl font-bold mb-6 text-center">Create Menu Item</h2>
+      <form onSubmit={handleSubmit}>
+        {/* Error Message */}
+        {errors.general && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            {errors.general}
           </div>
+        )}
 
-          <div className="mb-5">
-            <label
-              htmlFor="harga"
-              className="block text-sm font-medium text-gray-900"
-            >
-              Harga
-            </label>
-            <input
-              type="number"
-              name="harga"
-              id="harga"
-              className="input input-bordered w-full max-w-xs"
-              placeholder="Harga..."
-              value={state.harga}
-              onChange={handleChange}
-            />
-          </div>
+        {/* Name Input */}
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Name</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            className={`w-full px-3 py-2 border rounded-lg ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
+            placeholder="Enter menu item name"
+          />
+          {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+        </div>
 
-          <div className="mb-5">
-            <label
-              htmlFor="keterangan"
-              className="block text-sm font-medium text-gray-900"
-            >
-              Keterangan
-            </label>
-            <input
-              type="text"
-              name="keterangan"
-              id="keterangan"
-              className="input input-bordered w-full max-w-xs"
-              placeholder="Keterangan..."
-              value={state.keterangan}
-              onChange={handleChange}
-            />
-          </div>
+        {/* Price Input */}
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Price</label>
+          <input
+            type="number"
+            name="price"
+            value={formData.price}
+            onChange={handleInputChange}
+            className={`w-full px-3 py-2 border rounded-lg ${errors.price ? 'border-red-500' : 'border-gray-300'}`}
+            placeholder="Enter price"
+            step="0.01"
+          />
+          {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
+        </div>
 
-          <MenuAddButton label="Save" />
-        </form>
-      </div>
+        {/* Image Input */}
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Image</label>
+          <input
+            type="file"
+            name="image"
+            onChange={handleFileChange}
+            className="w-full px-3 py-2 border rounded-lg"
+            accept="image/*"
+          />
+          {errors.image && <p className="text-red-500 text-xs mt-1">{errors.image}</p>}
+        </div>
+
+        {/* Description Input */}
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
+          <input
+            type="text"
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            placeholder="Enter description (optional)"
+          />
+        </div>
+
+        {/* Submit Button */}
+        <div>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-yellow-400 text-white py-2 rounded-lg hover:bg-yellow-600 transition duration-300"
+          >
+            {isSubmitting ? 'Creating...' : 'Create Menu'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
 
-export default CreateMenu;
+export default CreateMenuForm;

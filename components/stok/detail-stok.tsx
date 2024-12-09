@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { IoEye } from "react-icons/io5";
+import { EyeClosed } from 'lucide-react';
 
 const DetailStok = ({ id }: { id: string }) => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -16,7 +16,7 @@ const DetailStok = ({ id }: { id: string }) => {
         throw new Error("Failed to fetch stok detail");
       }
       const data = await response.json();
-      setStok(data); // Simpan data karyawan
+      setStok(data);
     } catch (error) {
       console.error("Error fetching stok detail:", error);
     } finally {
@@ -26,7 +26,7 @@ const DetailStok = ({ id }: { id: string }) => {
 
   const handleOpenModal = async () => {
     setModalOpen(true);
-    await fetchStokDetail(); // Ambil data ketika modal dibuka
+    await fetchStokDetail(); 
   };
 
   const handleCloseModal = () => {
@@ -38,15 +38,14 @@ const DetailStok = ({ id }: { id: string }) => {
       <button
         onClick={handleOpenModal}
         className="hover-bg-gray-100 rounded-sm"
-        aria-label="View Employee Details"
+        aria-label="View Stok Details"
       >
-        <IoEye size={20} />
+            <EyeClosed size={20} />
       </button>
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-            {/* <h2 className="text-lg font-bold mb-4">Employee Details</h2> */}
             {isLoading ? (
               <p>Loading...</p>
             ) : stok ? (
@@ -66,7 +65,7 @@ const DetailStok = ({ id }: { id: string }) => {
             )}
             <button
               onClick={handleCloseModal}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+              className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded"
             >
               Close
             </button>

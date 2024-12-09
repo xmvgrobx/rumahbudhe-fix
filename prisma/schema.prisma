@@ -4,76 +4,103 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// prisma/schema.prisma
+datasource db {
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+enum JenisKelamin {
+  LAKI_LAKI
+  PEREMPUAN
 }
 
-model Employee {
-  id String @id @default(cuid())
-  name String
-  email String
-  phone String
-  shift String
+model Pegawai {
+  id       String   @id @default(cuid())
+  name     String
+  email    String   @unique
+  phone    String
+  shift    String
+  alamat   String
+  jenisKelamin JenisKelamin
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Menu{
-  id String   @id @default(cuid())
-  nama String
-  harga Float
-  keterangan String
+model Menu {
+  id          String   @id @default(cuid())  
+  name        String  
+  price       Float   
+  fotoUrl     String   
+  description String?  
+  createdAt   DateTime @default(now())    
+  updatedAt   DateTime @updatedAt        
+
+  transactionItems TransactionItem[]
+  
+}
+
+enum Role {
+  PEGAWAI
+  OWNER
+}
+
+model User {
+  id       String   @id @default(uuid())
+  name     String
+  email    String   @unique
+  password String
+  role     Role     @default(PEGAWAI)
+}
+
+
+model Transaction {
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-model Lemenu {
-  id          String    @id @default(cuid())
-  nama        String
-  harga       Float
-  keterangan  String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  detail      Detail[]  // Relasi dengan transaksi detail
-}
 
-model Transaksi {
-  id                String   @id @default(cuid())
-  totalHarga        Float
-  jumlah            Float
-  catatan           String   @db.VarChar(250)
-  metodeBayar       String   @db.VarChar(100)
-  tanggal           DateTime @default(now())
+  paymentMethod PaymentMethod
+  cash          Decimal?
+  change        Decimal?
+  note         String?
+  referralCode  String?
+  discount     Decimal @default(0)
 
-  transaksiDetail   Detail[]  // Relasi dengan detail transaksi
+  items TransactionItem[]
 }
 
-model Detail {
-  id           String    @id @default(cuid())
-  transaksiId  String
-  menuId       String
-  quantity     Int
-  subtotal     Float
-
-  transaksi    Transaksi @relation(fields: [transaksiId], references: [id])
-  menu         Lemenu    @relation(fields: [menuId], references: [id])  // Menambahkan relasi ke Lemenu
+model TransactionItem {
+  id            String   @id @default(uuid())
+  transactionId String
+  menuId        String
+  quantity      Int      @default(1)
+  price         Decimal
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  menu          Menu       @relation(fields: [menuId], references: [id], onDelete: Cascade)
 }
 
-model Kode {
-  id         String   @id @default(cuid())
-  nama       String
-  klaim     Float
-  expired   DateTime
+
+enum PaymentMethod {
+  CASH
+  QRIS
+}
+
+model Referral {
+  id            String   @id @default(uuid())
+  code          String   @unique
+  discount      Decimal  @default(10.00) // 10% discount by default
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Stok {
-  id String @id @default(cuid())
-  nama  String
+  id          String @id @default(cuid())
+  nama        String
   jumlah      String
   harga       Float
 }

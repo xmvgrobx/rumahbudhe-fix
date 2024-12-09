@@ -1,50 +1,49 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { del } from '@vercel/blob'; // Fungsi untuk menghapus gambar
 
-export async function DELETE(req: Request) {
+export async function DELETE(request: Request) {
   try {
-    // Parse body untuk mendapatkan ID menu
-    const { id } = await req.json();
+    const { id } = await request.json();
 
-    // Validasi ID
     if (!id) {
       return NextResponse.json(
-        { error: 'ID menu tidak ditemukan' },
+        { error: 'Menu item ID is required' },
         { status: 400 }
       );
     }
 
-    // Ambil data menu berdasarkan ID
-    const menu = await prisma.menu.findUnique({
-      where: { id },
+    const menuItem = await prisma.menu.findUnique({
+      where: { id }
     });
 
-    if (!menu) {
+    if (!menuItem) {
       return NextResponse.json(
-        { error: 'Menu tidak ditemukan' },
+        { error: 'Menu item not found' },
         { status: 404 }
       );
     }
 
-    // Hapus gambar jika ada
-    if (menu.image) {
-      await del(menu.image); // Hapus gambar dari storage
-    }
+    // Delete all related TransactionItems before deleting the Menu
+    await prisma.transactionItem.deleteMany({
+      where: { menuId: id }
+    });
 
-    // Hapus entri menu di database
+    // Now delete the Menu item
     await prisma.menu.delete({
-      where: { id },
+      where: { id }
     });
 
     return NextResponse.json(
-      { message: 'Menu berhasil dihapus' },
+      { message: 'Menu item deleted successfully' },
       { status: 200 }
     );
   } catch (error) {
     console.error('Error deleting menu:', error);
     return NextResponse.json(
-      { error: 'Terjadi kesalahan saat menghapus menu' },
+      {
+        error: 'Failed to delete menu item',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }

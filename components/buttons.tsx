@@ -1,122 +1,163 @@
 'use client';
 
 import Link from 'next/link';
-import { IoAddSharp, IoPencil, IoTrashOutline, IoEye } from 'react-icons/io5';
 import { useFormStatus } from 'react-dom';
 import clsx from 'clsx';
-import { deleteEmployee, deleteImage, deleteTransaksi } from '@/lib/actions';
 import React, { useState } from "react";
 import { useRouter } from 'next/navigation';
-import Modal from './employee/detail-employee';
+import { SquarePen, EyeClosed, Trash, Pencil} from 'lucide-react';
 
-export const CreateTransaksi = () => {
-  return (
-    <div className="mb-2 w-full text-right">
+export const EditPegawai = ({ id }: { id: string }) => {
+    return (
       <Link
-        href="/transaksi/create"
-        className="btn btn-ghost bg-yellow-300 hover:bg-yellow-400"
+        href={`/pegawai/edit/${id}`}
+        className="hover-bg-gray-100 rounded-sm"
       >
-        <IoAddSharp size={20} />
-        Create
+        <SquarePen size={20} />
       </Link>
-    </div>
-  );
+    );
+};
+  
+
+export const DeletePegawai = ({ id }: { id: string }) => {
+    const [isDeleting, setIsDeleting] = useState(false);
+  
+    const handleDelete = async () => {
+      const confirmed = window.confirm('Yakin ingin menghapus pegawai ini?');
+      if (!confirmed) return;
+  
+      setIsDeleting(true); // Mulai proses penghapusan
+  
+      try {
+        const res = await fetch('/api/pegawai/delete', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+  
+        if (res.ok) {
+          alert('Pegawai berhasil dihapus');
+          window.location.reload(); // Reload halaman untuk memperbarui data
+        } else {
+          const data = await res.json();
+          alert(data.error || 'Gagal menghapus pegawai');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat menghapus pegawai');
+      } finally {
+        setIsDeleting(false); // Selesai proses penghapusan
+      }
+    };
+    return (
+      <form onSubmit={handleDelete}>
+        <button 
+          type="submit" 
+          className="hover-bg-gray-100 rounded-sm"
+          >
+          <Trash size={20} className="text-red-500" />
+        </button>
+      </form>
+    );
+  };
+
+export const PegawaiAddButton = ({ label }: { label: string }) => {
+    const { pending } = useFormStatus();
+    const router = useRouter(); 
+    const className = clsx(
+      'text-white bg-yellow-200 hover:bg-yellow-300 font-medium rounded-lg text-sm w-80 px-5 py-3 text-center',
+      {
+        'opacity-50 cursor-progress': pending,
+      },
+    );
+  
+    const handleSubmit = () => {
+      if (!pending) {
+        router.push('/pegawai');
+      }
+    };
+  
+    return (
+      <button
+        type="submit"
+        className={className}
+        disabled={pending}
+        onClick={handleSubmit} 
+      >
+        {label === 'save' ? (
+          <span>{pending ? 'Saving...' : 'Save'}</span>
+        ) : (
+          <span>{pending ? 'Saving...' : 'Save'}</span>
+        )}
+      </button>
+    );
 };
 
-export const CreateEmployee = () => {
+export const SubmitButtonMenu = ({ 
+  label, 
+  disabled 
+}: { 
+  label: string;
+  disabled?: boolean;
+}) => {
   return (
-    <div className="mb-2 w-full text-right">
-      <Link
-        href="/employee/create"
-        className="btn btn-ghost bg-yellow-200 hover:bg-yellow-300"
-      >
-        <IoAddSharp size={20} />
-        Create
-      </Link>
-    </div>
-  );
-};
-
-
-export const EditEmployee = ({ id }: { id: string }) => {
-  return (
-    <Link
-      href={`/employee/edit/${id}`}
-      className="hover-bg-gray-100 rounded-sm"
+    <button
+      type="submit"
+      disabled={disabled}
+      className={`w-full bg-gray-800 text-white py-2 px-4 rounded-sm hover:bg-gray-900 ${
+        disabled ? 'opacity-50 cursor-not-allowed' : ''
+      }`}
     >
-      <IoPencil size={20} />
-    </Link>
+      {label}
+    </button>
   );
 };
 
-export const DeleteEmployee = ({ id }: { id: string }) => {
+export const DeleteMenu = ({ id }: { id: string }) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    const confirmed = window.confirm('Yakin ingin menghapus pegawai ini?');
+    const confirmed = window.confirm('Yakin ingin menghapus menu ini?');
     if (!confirmed) return;
 
     setIsDeleting(true); // Mulai proses penghapusan
 
     try {
-      const res = await fetch('/api/employee/delete', {
+      const res = await fetch('/api/menu/delete', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       });
 
       if (res.ok) {
-        alert('Pegawai berhasil dihapus');
+        alert('Menu berhasil dihapus');
         window.location.reload(); // Reload halaman untuk memperbarui data
       } else {
         const data = await res.json();
-        alert(data.error || 'Gagal menghapus pegawai');
+        alert(data.error || 'Gagal menghapus menu');
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Terjadi kesalahan saat menghapus pegawai');
+      alert('Terjadi kesalahan saat menghapus menu');
     } finally {
       setIsDeleting(false); // Selesai proses penghapusan
     }
   };
+
   return (
-    <form onSubmit={handleDelete}>
-      <button 
-        type="submit" 
-        className="hover-bg-gray-100 rounded-sm"
-        >
-        <IoTrashOutline className="text-red-500" />
-      </button>
-    </form>
-  // return (
-  //   <button
-  //     onClick={handleDelete}
-  //     className={`py-3 text-sm rounded-bl-md w-full text-center ${
-  //       isDeleting
-  //         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-  //         : 'bg-gray-50 hover:bg-gray-100'
-  //     }`}
-  //     disabled={isDeleting} // Nonaktifkan tombol saat proses berjalan
-  //   >
-  //     {isDeleting ? 'Deleting...' : 'Delete'}
-  //   </button>
+    <button
+      onClick={handleDelete}
+      className={`py-3 text-sm rounded-bl-md w-full text-center ${
+        isDeleting
+          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          : 'bg-gray-50 hover:bg-gray-100'
+      }`}
+      disabled={isDeleting} // Nonaktifkan tombol saat proses berjalan
+    >
+      {isDeleting ? 'Deleting...' : 'Delete'}
+    </button>
   );
 };
-
-export const CreateStok = () => {
-  return (
-    <div className="mb-2 w-full text-right">
-      <Link
-        href="/stok/create"
-        className="btn btn-ghost bg-yellow-200 hover:bg-yellow-300"
-      >
-        <IoAddSharp size={20} />
-        Create
-      </Link>
-    </div>
-  );
-};
-
 
 export const EditStok = ({ id }: { id: string }) => {
   return (
@@ -124,7 +165,7 @@ export const EditStok = ({ id }: { id: string }) => {
       href={`/stok/edit/${id}`}
       className="hover-bg-gray-100 rounded-sm"
     >
-      <IoPencil size={20} />
+      <SquarePen size={20} />
     </Link>
   );
 };
@@ -165,15 +206,15 @@ export const DeleteStok = ({ id }: { id: string }) => {
         type="submit" 
         className="hover-bg-gray-100 rounded-sm"
         >
-        <IoTrashOutline className="w-5 text-red-500" />
-      </button>
+          <Trash size={20} className="text-red-500" />
+          </button>
     </form>
   );
 };
 
 export const StokAddButton = ({ label }: { label: string }) => {
   const { pending } = useFormStatus();
-  const router = useRouter(); // Hook untuk navigasi
+  const router = useRouter(); 
   const className = clsx(
     'text-white bg-yellow-200 hover:bg-yellow-300 font-medium rounded-lg text-sm w-80 px-5 py-3 text-center',
     {
@@ -182,7 +223,6 @@ export const StokAddButton = ({ label }: { label: string }) => {
   );
 
   const handleSubmit = () => {
-    // Setelah submit selesai dan tidak ada error
     if (!pending) {
       router.push('/stok');
     }
@@ -193,7 +233,7 @@ export const StokAddButton = ({ label }: { label: string }) => {
       type="submit"
       className={className}
       disabled={pending}
-      onClick={handleSubmit} // Panggil handleSubmit setelah form submit
+      onClick={handleSubmit} 
     >
       {label === 'save' ? (
         <span>{pending ? 'Saving...' : 'Save'}</span>
@@ -204,30 +244,9 @@ export const StokAddButton = ({ label }: { label: string }) => {
   );
 };
 
-
-export const SubmitButton = ({ label }: { label: string }) => {
+export const KodeAddButton = ({ label }: { label: string }) => {
   const { pending } = useFormStatus();
-  const className = clsx(
-    'text-white bg-yellow-200 hover:bg-yellow-300 font-medium rounded-lg text-sm w-80 px-5 py-3 text-center',
-    {
-      'opacity-50 cursor-progress': pending,
-    },
-  );
-
-  return (
-    <button type="submit" className={className} disabled={pending}>
-      {label === 'save' ? (
-        <span>{pending ? 'Saving...' : 'Save'}</span>
-      ) : (
-        <span>{pending ? 'Updating...' : 'Update'}</span>
-      )}
-    </button>
-  );
-};
-
-export const EmployeeAddButton = ({ label }: { label: string }) => {
-  const { pending } = useFormStatus();
-  const router = useRouter(); // Hook untuk navigasi
+  const router = useRouter(); 
   const className = clsx(
     'text-white bg-yellow-200 hover:bg-yellow-300 font-medium rounded-lg text-sm w-80 px-5 py-3 text-center',
     {
@@ -236,10 +255,8 @@ export const EmployeeAddButton = ({ label }: { label: string }) => {
   );
 
   const handleSubmit = () => {
-    // Setelah submit selesai dan tidak ada error
     if (!pending) {
-      // Redirect ke halaman /employee setelah form berhasil disubmit
-      router.push('/employee');
+      router.push('/referral');
     }
   };
 
@@ -248,7 +265,7 @@ export const EmployeeAddButton = ({ label }: { label: string }) => {
       type="submit"
       className={className}
       disabled={pending}
-      onClick={handleSubmit} // Panggil handleSubmit setelah form submit
+      onClick={handleSubmit} 
     >
       {label === 'save' ? (
         <span>{pending ? 'Saving...' : 'Save'}</span>
@@ -259,59 +276,28 @@ export const EmployeeAddButton = ({ label }: { label: string }) => {
   );
 };
 
-export const MenuAddButton = ({ label }: { label: string }) => {
-  const { pending } = useFormStatus();
-  const router = useRouter(); // Hook untuk navigasi
-  const className = clsx(
-    'text-white bg-yellow-200 hover:bg-yellow-300 font-medium rounded-lg text-sm w-80 px-5 py-3 text-center',
-    {
-      'opacity-50 cursor-progress': pending,
-    },
-  );
-
-  const handleSubmit = () => {
-    // Setelah submit selesai dan tidak ada error
-    if (!pending) {
-      // Redirect ke halaman /employee setelah form berhasil disubmit
-      router.push('/menu');
-    }
-  };
-
-  return (
-    <button
-      type="submit"
-      className={className}
-      disabled={pending}
-      onClick={handleSubmit} // Panggil handleSubmit setelah form submit
-    >
-      {label === 'save' ? (
-        <span>{pending ? 'Saving...' : 'Save'}</span>
-      ) : (
-        <span>{pending ? 'Saving...' : 'Save'}</span>
-      )}
-    </button>
-  );
-};
-
-export function EditTransaksi({ id }: { id: string }) {
+export const EditTransaksi = ({ id }: { id: string }) => {
   return (
     <Link
-      href={`/transaksi/${id}/edit`}
-      className="rounded-md border p-2 hover:bg-gray-100"
+      href={`/transaction/edit/${id}`}
+      className="hover-bg-gray-100 rounded-sm"
     >
-      <IoPencil className="w-5 text-yellow-500" />
+      <SquarePen size={20} />
     </Link>
   );
-}
+};
 
-export function DeleteTransaksi({ id }: { id: string }) {
-  const handleDelete = async (e: React.FormEvent) => {
-    e.preventDefault();
+export const DeleteTransaksi = ({ id }: { id: string }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
 
-    if (!confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) return;
+  const handleDelete = async () => {
+    const confirmed = window.confirm('Yakin ingin menghapus transaksi ini?');
+    if (!confirmed) return;
+
+    setIsDeleting(true); // Mulai proses penghapusan
 
     try {
-      const res = await fetch(`/api/transaction/delete`, {
+      const res = await fetch('/api/transaction/delete', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
@@ -319,165 +305,79 @@ export function DeleteTransaksi({ id }: { id: string }) {
 
       if (res.ok) {
         alert('Transaksi berhasil dihapus');
-        window.location.reload(); // Refresh halaman
+        window.location.reload(); // Reload halaman untuk memperbarui data
       } else {
         const data = await res.json();
         alert(data.error || 'Gagal menghapus transaksi');
       }
     } catch (error) {
-      console.error('Error deleting transaction:', error);
+      console.error('Error:', error);
       alert('Terjadi kesalahan saat menghapus transaksi');
+    } finally {
+      setIsDeleting(false); // Selesai proses penghapusan
     }
   };
-
   return (
     <form onSubmit={handleDelete}>
       <button 
         type="submit" 
-        className="rounded-md border p-2 hover:bg-gray-100"
-      >
-        <IoTrashOutline className="w-5 text-red-500" />
-      </button>
+        className="hover-bg-gray-100 rounded-sm"
+        >
+          <Trash size={20} className="text-red-500" />
+          </button>
     </form>
-  );
-}
-
-// export const SubmitButtonMenu = ({ label }: { label: string }) => {
-//   const { pending } = useFormStatus();
-//   return (
-//     <button
-//       className={clsx(
-//         'w-full rounded-sm bg-yellow-200 px-6 py-2.5 text-base font-medium text-white hover:bg-yellow-300',
-//         {
-//           'cursor-progress opacity-50': pending,
-//         },
-//       )}
-//       type="submit"
-//       disabled={pending}
-//     >
-//       {label === 'upload' ? (
-//         <>{pending ? 'Uploading...' : 'Upload'}</>
-//       ) : (
-//         <>{pending ? 'Updating...' : 'Update'}</>
-//       )}
-//     </button>
-//   );
-// };
-
-export const RegisterButton = () => {
-  const { pending } = useFormStatus();
-  return (
-      <button
-          type="submit"
-          disabled={pending}
-          className="w-full text-white bg-yellow-400 font-medium rounded-lg shadow-md px-5
-          py-2.5 text-center hover:bg-yellow-500"
-      >
-          {pending ? "Registering" : "Register"}
-
-      </button>
-  )
-}
-
-export const SubmitButtonMenu = ({ 
-  label, 
-  disabled 
-}: { 
-  label: string;
-  disabled?: boolean;
-}) => {
-  return (
-    <button
-      type="submit"
-      disabled={disabled}
-      className={`w-full bg-gray-800 text-white py-2 px-4 rounded-sm hover:bg-gray-900 ${
-        disabled ? 'opacity-50 cursor-not-allowed' : ''
-      }`}
-    >
-      {label}
-    </button>
   );
 };
 
-export const EditMenu = ({ id }: { id: string }) => {
+export const EditKode = ({ id }: { id: string }) => {
   return (
     <Link
-      href={`menu/edit/${id}`}
-      className="py-3 text-sm bg-gray-50 rounded-bl-md w-full hover:bg-gray-100 text-center"
+      href={`/referral/edit/${id}`}
+      className="hover-bg-gray-100 rounded-sm"
     >
-      Edit
+      <SquarePen size={20} />
     </Link>
   );
 };
 
-// "use client";
-
-// import React, { useTransition } from "react";
-
-export const DeleteMenu = ({ id }: { id: string }) => {
+export const DeleteKode = ({ id }: { id: string }) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    const confirmed = window.confirm('Yakin ingin menghapus menu ini?');
+    const confirmed = window.confirm('Yakin ingin menghapus transaksi ini?');
     if (!confirmed) return;
 
     setIsDeleting(true); // Mulai proses penghapusan
 
     try {
-      const res = await fetch('/api/delete/menu', {
+      const res = await fetch('/api/referral/delete', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       });
 
       if (res.ok) {
-        alert('Menu berhasil dihapus');
+        alert('Transaksi berhasil dihapus');
         window.location.reload(); // Reload halaman untuk memperbarui data
       } else {
         const data = await res.json();
-        alert(data.error || 'Gagal menghapus menu');
+        alert(data.error || 'Gagal menghapus transaksi');
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Terjadi kesalahan saat menghapus menu');
+      alert('Terjadi kesalahan saat menghapus transaksi');
     } finally {
       setIsDeleting(false); // Selesai proses penghapusan
     }
   };
-
   return (
-    <button
-      onClick={handleDelete}
-      className={`py-3 text-sm rounded-bl-md w-full text-center ${
-        isDeleting
-          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          : 'bg-gray-50 hover:bg-gray-100'
-      }`}
-      disabled={isDeleting} // Nonaktifkan tombol saat proses berjalan
-    >
-      {isDeleting ? 'Deleting...' : 'Delete'}
-    </button>
+    <form onSubmit={handleDelete}>
+      <button 
+        type="submit" 
+        className="hover-bg-gray-100 rounded-sm"
+        >
+          <Trash size={20} className="text-red-500" />
+          </button>
+    </form>
   );
 };
-
-
-// export const DeleteMenu = ({ id }: { id: string }) => {
-//   const deleteImageWithId = deleteImage.bind(null, id);
-//   return (
-//     <form
-//       action={deleteImageWithId}
-//       className="py-3 text-sm bg-gray-50 rounded-bl-md w-full hover:bg-gray-100 text-center"
-//     >
-//       <DeleteBtn />
-//     </form>
-//   );
-// };
-
-// const DeleteBtn = () => {
-//   const { pending } = useFormStatus();
-//   return (
-//     <button type="submit" disabled={pending}>
-//       {pending ? 'Deleting...' : 'Delete'}
-//     </button>
-//   );
-// };

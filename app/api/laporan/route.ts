@@ -53,7 +53,6 @@
 //   }
 // }
 
-
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; // Prisma instance
 
@@ -85,24 +84,50 @@ export async function GET(req: Request) {
     }
 
     // Query transactions from the database
-    const transaksi = await prisma.transaksi.findMany({
+    const transaksi = await prisma.transaction.findMany({
       where: {
-        tanggal: {
+        createdAt: {
           gte: startDate,
           lte: endDate,
         },
       },
-      select: {
-        id: true,
-        totalHarga: true,
-        jumlah: true,
-        tanggal: true,
+      include: {
+        items: {
+          include: {
+            menu: true,  // Include menu data for each transaction item
+          },
+        },
       },
     });
 
-    const total = transaksi.reduce((sum, item) => sum + item.totalHarga, 0);
+    // Calculate total sales (total of each item based on quantity and price)
+    const total = transaksi.reduce((sum, item) => {
+      const itemTotal = item.items.reduce((itemSum, transactionItem) => {
+        const price = transactionItem.price instanceof Decimal ? +transactionItem.price : transactionItem.price;
+        const quantity = transactionItem.quantity;
+        return itemSum + price * quantity;
+      }, 0);
+      return sum + itemTotal;
+    }, 0);
 
-    return NextResponse.json({ transaksi, total });
+    // Format transactions with details (items, price, quantity)
+    const formattedTransactions = transaksi.map((item) => ({
+      id: item.id,
+      createdAt: item.createdAt,
+      totalHarga: item.items.reduce((itemSum, transactionItem) => {
+        const price = transactionItem.price instanceof Decimal ? +transactionItem.price : transactionItem.price;
+        const quantity = transactionItem.quantity;
+        return itemSum + price * quantity;
+      }, 0),
+      items: item.items.map((transactionItem) => ({
+        menu: transactionItem.menu.name,
+        quantity: transactionItem.quantity,
+        price: transactionItem.price,
+        total: transactionItem.price * transactionItem.quantity,
+      })),
+    }));
+
+    return NextResponse.json({ transactions: formattedTransactions, total });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
@@ -111,6 +136,8 @@ export async function GET(req: Request) {
     );
   }
 }
+
+
 
 // import { NextResponse } from "next/server";
 // import { prisma } from "@/lib/prisma"; // Prisma instance

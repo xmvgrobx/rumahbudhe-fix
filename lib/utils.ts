@@ -1,34 +1,50 @@
 import { Revenue } from './definitions';
-import { ClassValue, clsx } from 'clsx'
-import { twMerge } from 'tailwind-merge'
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+export interface MenuItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
 }
 
-const CURRENCY_FORMATTER = new Intl.NumberFormat(undefined, {
-  currency: "IDR",
-  style: "currency",
-})
-
-export const formatCurrency = (amount: number) => {
-  if (typeof amount !== "number" || isNaN(amount)) {
-    return "IDR 0"; // Tampilkan default jika amount tidak valid
-  }
-  return "IDR " + amount.toLocaleString("id-ID", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  });
+type CartItem = {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
 };
 
+export interface CheckoutFormProps {
+  cartItems: MenuItem[];
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+export function formatCurrency(value: any): string {
+  // Gunakan toNumber jika value adalah tipe Decimal
+  const numValue = typeof value === "object" && "toNumber" in value ? value.toNumber() : value;
+  return `Rp${numValue.toLocaleString("id-ID", { minimumFractionDigits: 0 })}`;
+}
 
 
 // export const formatCurrency = (amount: number) => {
-//   return 'Rp ' + (amount).toLocaleString('id-ID', {
+//   if (typeof amount !== "number" || isNaN(amount)) {
+//     return "IDR 0"; // Tampilkan default jika amount tidak valid
+//   }
+//   return "IDR " + amount.toLocaleString("id-ID", {
 //     minimumFractionDigits: 0,
-//     maximumFractionDigits: 0,
+//     maximumFractionDigits: 2,
 //   });
 // };
+
+export const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  const formatter = new Intl.DateTimeFormat("id-ID", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+  return formatter.format(date);
+};
 
 
 export const formatDateToLocal = (
@@ -42,15 +58,6 @@ export const formatDateToLocal = (
     year: 'numeric',
   };
   const formatter = new Intl.DateTimeFormat(locale, options);
-  return formatter.format(date);
-};
-
-export const formatDate = (dateStr: string) => {
-  const date = new Date(dateStr);
-  const formatter = new Intl.DateTimeFormat("id-ID", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
   return formatter.format(date);
 };
 
@@ -100,3 +107,4 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+

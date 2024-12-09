@@ -32,32 +32,43 @@ export const SignInSchema = z.object({
       .max(32, "Password must be less than 32 characters"),
 });
 
+// export const MenuSchema = z.object({
+//   name: z
+//     .string()
+//     .min(1, { message: "Nama menu wajib diisi" })
+//     .max(100, { message: "Nama menu terlalu panjang" }),
+
+//   fotoUrl: z
+//     .instanceof(File)
+//     .refine((file) => file.size <= MAX_FILE_SIZE, {
+//       message: `Ukuran file maksimal 5MB`,
+//     })
+//     .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
+//       message: "Format file harus berupa .jpg, .jpeg, .png atau .webp",
+//     }),
+
+//   price: z
+//     .string()
+//     .min(1, { message: "Harga wajib diisi" })
+//     .transform((val) => parseInt(val, 10))
+//     .refine((val) => !isNaN(val), {
+//       message: "Harga harus berupa angka"
+//     })
+//     .refine((val) => val >= 0, {
+//       message: "Harga tidak boleh negatif"
+//     }),
+
+//     description: z
+//     .string()
+//     .min(1, { message: "Keterangan wajib diisi" })
+//     .max(500, { message: "Keterangan terlalu panjang" }),
+// });
+
 export const MenuSchema = z.object({
-  nama: z
-    .string()
-    .min(1, { message: "Nama menu wajib diisi" })
-    .max(100, { message: "Nama menu terlalu panjang" }),
-
-
-
-  harga: z
-    .string()
-    .min(1, { message: "Harga wajib diisi" })
-    .transform((val) => parseInt(val, 10))
-    .refine((val) => !isNaN(val), {
-      message: "Harga harus berupa angka"
-    })
-    .refine((val) => val >= 0, {
-      message: "Harga tidak boleh negatif"
-    }),
-
-  keterangan: z
-    .string()
-    .min(1, { message: "Keterangan wajib diisi" })
-    .max(500, { message: "Keterangan terlalu panjang" }),
-
-    createdAt: z.date().optional(),
-    updatedAt: z.date().optional(),
+  name: z.string().min(1, "Name is required"),
+  price: z.string().or(z.number()).transform(Number),
+  description: z.string().optional(),
+  fotoUrl: z.string().optional(), // This will be set by the upload process
 });
 
 // This type can be used for TypeScript type safety
