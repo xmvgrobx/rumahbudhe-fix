@@ -1,15 +1,12 @@
-// app/api/dashboard/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    // Get current date and start of day
     const now = new Date();
     const startOfDay = new Date(now);
     startOfDay.setHours(0, 0, 0, 0);
 
-    // Get all transactions for today with their items and menu details
     const transactions = await prisma.transaction.findMany({
       where: {
         createdAt: {
@@ -28,7 +25,7 @@ export async function GET() {
       },
     });
 
-    // Calculate total revenue
+
     const totalRevenue = transactions.reduce((sum, transaction) => {
       const transactionTotal = transaction.items.reduce(
         (itemSum, item) => itemSum + (Number(item.price) * item.quantity),
@@ -37,7 +34,7 @@ export async function GET() {
       return sum + (transactionTotal - Number(transaction.discount));
     }, 0);
 
-    // Get menu popularity data
+
     const menuStats = await prisma.transactionItem.groupBy({
       by: ['menuId'],
       _sum: {
@@ -48,7 +45,7 @@ export async function GET() {
       },
     });
 
-    // Get menu details for popular items
+
     const menuDetails = await prisma.menu.findMany({
       where: {
         id: {
@@ -57,7 +54,7 @@ export async function GET() {
       },
     });
 
-    // Calculate popular menus with order counts and revenue
+   
     const popularMenus = menuStats
       .map(stat => {
         const menu = menuDetails.find(m => m.id === stat.menuId);
@@ -70,10 +67,10 @@ export async function GET() {
       .sort((a, b) => b.orderCount - a.orderCount)
       .slice(0, 5);
 
-    // Get total number of menu items
+
     const totalMenuItems = await prisma.menu.count();
 
-    // Format recent transactions
+
     const recentTransactions = transactions.slice(0, 5).map(transaction => ({
       id: transaction.id,
       createdAt: transaction.createdAt,

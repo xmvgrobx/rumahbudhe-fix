@@ -57,7 +57,7 @@ const DetailStok = ({ id }: { id: string }) => {
                   <strong>Jumlah Barang:</strong> {stok.jumlah}
                 </p>
                 <p>
-                  <strong>Harga Barang:</strong> {stok.harga}
+                  <strong>Harga Barang:</strong> Rp {stok.harga}
                 </p>
               </div>
             ) : (

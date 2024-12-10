@@ -11,6 +11,27 @@ import {
 import { formatCurrency } from './utils';
 import { prisma } from '@/lib/prisma';
 
+import { PrismaClient } from '@prisma/client'
+import type { Menu } from '@/lib/utils'
+
+declare global {
+  var prisma: PrismaClient | undefined
+}
+
+export async function getMenuItems(): Promise<Menu[]> {
+  try {
+    const menus = await prisma.menu.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+    return menus
+  } catch (error) {
+    console.error('Error fetching menu items:', error)
+    return []
+  }
+}
+
 export const getImages = async () => {
   try {
     const result = await prisma.menu.findMany({

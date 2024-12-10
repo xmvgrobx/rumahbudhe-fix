@@ -7,6 +7,16 @@ export interface MenuItem {
   quantity: number;
 }
 
+export interface Menu {
+  id: string
+  name: string
+  price: number
+  fotoUrl: string
+  description?: string | null
+  createdAt: Date
+  updatedAt: Date
+}
+
 type CartItem = {
   id: string;
   name: string;
@@ -27,15 +37,15 @@ export function formatCurrency(value: any): string {
 }
 
 
-// export const formatCurrency = (amount: number) => {
-//   if (typeof amount !== "number" || isNaN(amount)) {
-//     return "IDR 0"; // Tampilkan default jika amount tidak valid
-//   }
-//   return "IDR " + amount.toLocaleString("id-ID", {
-//     minimumFractionDigits: 0,
-//     maximumFractionDigits: 2,
-//   });
-// };
+export const formatCurrencyy = (amount: number) => {
+  if (typeof amount !== "number" || isNaN(amount)) {
+    return "IDR 0"; // Tampilkan default jika amount tidak valid
+  }
+  return "IDR " + amount.toLocaleString("id-ID", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+};
 
 export const formatDate = (dateStr: string) => {
   const date = new Date(dateStr);

@@ -27,7 +27,7 @@ const StokTable = async () => {
           <tr key={s.id} className="bg-white border-b">
             <td className="py-3 px-6">{s.nama}</td>
             <td className="py-3 px-6">{s.jumlah}</td>
-            <td className="py-3 px-6">{s.harga}</td>
+            <td className="py-3 px-6">Rp {s.harga}</td>
            
             <td className="flex justify-center gap-1 py-3">
               <DetailStok id={s.id}/>

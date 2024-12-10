@@ -1,4 +1,3 @@
-// app/reports/page.tsx
 "use client";
 import { useState } from "react";
 import { format } from "date-fns";
@@ -46,7 +45,7 @@ export default function ReportsPage() {
       <Sidebar />
       <div className="flex-1 p-10 bg-gray-100">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">Transaction Reports</h1>
+          <h1 className="text-2xl font-bold">Laporan</h1>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-md">
@@ -94,7 +93,7 @@ export default function ReportsPage() {
               disabled={loading}
               className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
             >
-              {loading ? "Loading..." : "Generate Report"}
+              {loading ? "Loading..." : "Generate Laporan"}
             </button>
 
             {data && (
@@ -122,7 +121,7 @@ export default function ReportsPage() {
                 </div>
                 <div className="p-4 bg-yellow-100 rounded-lg">
                   <h3 className="font-bold">Total Discount</h3>
-                  <p>Rp {data.summary.totalDiscount.toLocaleString()}</p>
+                  <p>{data.summary.totalDiscount.toLocaleString()}%</p>
                 </div>
               </div>
 
@@ -144,7 +143,7 @@ export default function ReportsPage() {
                         <td className="p-3">{t.date}</td>
                         <td className="p-3">{t.paymentMethod}</td>
                         <td className="p-3">Rp {t.subtotal.toLocaleString()}</td>
-                        <td className="p-3">Rp {t.discount.toLocaleString()}</td>
+                        <td className="p-3">{t.discount.toLocaleString()}%</td>
                         <td className="p-3">Rp {t.total.toLocaleString()}</td>
                       </tr>
                     ))}

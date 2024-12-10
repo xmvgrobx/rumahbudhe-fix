@@ -1,9 +1,10 @@
 'use client'
 
-import {User, ChevronLast, SquareMenu, Utensils, ScanLine, Box, ClipboardMinus, ChevronFirst } from "lucide-react";
+import { User, ChevronLast, SquareMenu, Utensils, ScanLine, Box, ClipboardMinus, ChevronFirst } from "lucide-react";
 import { useContext, createContext, useState, ReactNode } from "react";
-import { useSession } from "next-auth/react"; // Menggunakan NextAuth untuk autentikasi
-import Link from 'next/link'; // Import Link dari Next.js
+import { useSession } from "next-auth/react"; 
+import { useRouter } from "next/navigation"; 
+import Link from 'next/link'; 
 
 interface SidebarContextProps {
   expanded: boolean;
@@ -17,8 +18,9 @@ interface SidebarProps {
 
 export default function Sidebar({ children }: SidebarProps) {
   const [expanded, setExpanded] = useState(true);
-  const { data: session } = useSession(); // Ambil data pengguna dari sesi
-  const userRole = session?.user?.role; // Akses role dari sesi
+  const { data: session } = useSession(); 
+  const userRole = session?.user?.role; 
+  const router = useRouter(); 
 
   // Menu lengkap
   const menuItems = [
@@ -35,6 +37,11 @@ export default function Sidebar({ children }: SidebarProps) {
     (item) => item.role === "ALL" || userRole === "OWNER"
   );
 
+  // Fungsi untuk menangani klik pada logo
+  function handleLogoClick() {
+    router.push("/dashboard");
+  }
+
   return (
     <aside className="h-screen">
       <nav className="h-full flex flex-col bg-white border-r shadow-sm">
@@ -43,8 +50,9 @@ export default function Sidebar({ children }: SidebarProps) {
             src="/logo.png"
             className={`overflow-hidden transition-all ${
               expanded ? "w-20" : "w-0"
-            }`}
+            } cursor-pointer`} 
             alt="Logo"
+            onClick={handleLogoClick} 
           />
           <button
             onClick={() => setExpanded((curr) => !curr)}
@@ -64,11 +72,6 @@ export default function Sidebar({ children }: SidebarProps) {
         </SidebarContext.Provider>
 
         <div className="border-t flex p-3">
-          {/* <img
-            src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
-            alt="User avatar"
-            className="w-10 h-10 rounded-md"
-          /> */}
           <div
             className={`
               flex justify-between items-center
@@ -81,7 +84,6 @@ export default function Sidebar({ children }: SidebarProps) {
                 {session?.user?.email || "johndoe@gmail.com"}
               </span>
             </div>
-            {/* <MoreVertical size={20} /> */}
           </div>
         </div>
       </nav>
@@ -92,7 +94,7 @@ export default function Sidebar({ children }: SidebarProps) {
 interface SidebarItemProps {
   icon: ReactNode;
   text: string;
-  href: string; // Menambahkan properti href
+  href: string; 
 }
 
 export function SidebarItem({ icon, text, href }: SidebarItemProps) {

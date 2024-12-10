@@ -17,6 +17,7 @@ const PegawaiTable = async () => {
       <thead className="text-sm text-gray-700 uppercase bg-white-50">
         <tr>
           <th className="py-3 px-6">Nama</th>
+          <th className="py-3 px-6">Email</th>
           <th className="py-3 px-6">Jadwal Shift</th>
           <th className="py-3 px-6 text-center">Actions</th>
         </tr>
@@ -25,8 +26,8 @@ const PegawaiTable = async () => {
         {emp.map((e) => (
           <tr key={e.id} className="bg-white border-b">
             <td className="py-3 px-6">{e.name}</td>
+            <td className="py-3 px-6">{e.email}</td>
             <td className="py-3 px-6">{e.shift}</td>
-           
             <td className="flex justify-center gap-1 py-3">
               <DetailPegawai id={e.id}/>
               <EditPegawai id={e.id}/>

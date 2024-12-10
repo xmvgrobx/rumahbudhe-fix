@@ -133,7 +133,7 @@ const EditStok = ({ id }: { id: string }) => {
         {/* Submit button */}
         <button
           type="submit"
-          className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-3 text-center"
+          className="text-white bg-yellow-500 hover:bg-yellow-600 font-medium rounded-lg text-sm px-5 py-3 text-center"
         >
           Update Stok
         </button>
