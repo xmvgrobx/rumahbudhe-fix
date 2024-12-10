@@ -297,7 +297,7 @@ export const DeleteTransaksi = ({ id }: { id: string }) => {
     setIsDeleting(true); // Mulai proses penghapusan
 
     try {
-      const res = await fetch('/api/transaction/delete', {
+      const res = await fetch('/app/api/transaction/delete', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
