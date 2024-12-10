@@ -1,10 +1,11 @@
 {
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "prisma generate && next build",
     "dev": "next dev",
     "start": "next start",
-    "seed": "node -r dotenv/config ./scripts/seed.js"
+    "seed": "node -r dotenv/config ./scripts/seed.js",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.0.1",
