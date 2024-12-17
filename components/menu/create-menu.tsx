@@ -86,6 +86,7 @@ const CreateMenuForm = () => {
 
       const data = await response.json();
 
+
       if (!response.ok) {
         setErrors({ 
           general: data.error || 'An error occurred while creating the menu' 

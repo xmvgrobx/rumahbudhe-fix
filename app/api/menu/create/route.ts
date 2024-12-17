@@ -42,7 +42,6 @@ export async function POST(req: Request) {
         ...(description && { description }),
       },
     });
-
     return NextResponse.json(
       { message: 'Menu created successfully', menu },
       { status: 201 }

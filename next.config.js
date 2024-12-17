@@ -10,6 +10,9 @@ const nextConfig = {
       },
     ],
   },
+  env: {
+    DRAFT_MODE: process.env.DRAFT_MODE || 'false', // Gunakan nilai dari .env
+  },
 };
 
 module.exports = nextConfig;
