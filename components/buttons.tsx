@@ -212,18 +212,56 @@ export const DeleteStok = ({ id }: { id: string }) => {
   );
 };
 
-export const StokAddButton = ({ label }: { label: string }) => {
+// export const StokAddButton = ({ label }: { label: string }) => {
+//   const { pending } = useFormStatus();
+//   const router = useRouter(); 
+//   const className = clsx(
+//     'text-white bg-yellow-200 hover:bg-yellow-300 font-medium rounded-lg text-sm w-80 px-5 py-3 text-center',
+//     {
+//       'opacity-50 cursor-progress': pending,
+//     },
+//   );
+
+//   const handleSubmit = () => {
+//     if (!pending) {
+//       router.push('/stok');
+//     }
+//   };
+
+//   return (
+//     <button
+//       type="submit"
+//       className={className}
+//       disabled={pending}
+//       onClick={handleSubmit} 
+//     >
+//       {label === 'save' ? (
+//         <span>{pending ? 'Saving...' : 'Save'}</span>
+//       ) : (
+//         <span>{pending ? 'Saving...' : 'Save'}</span>
+//       )}
+//     </button>
+//   );
+// };
+
+interface StokAddButtonProps {
+  label: string;
+  disabled?: boolean; // Tambahkan properti disabled, yang bersifat opsional
+}
+
+export const StokAddButton = ({ label, disabled }: StokAddButtonProps) => {
   const { pending } = useFormStatus();
   const router = useRouter(); 
+
   const className = clsx(
     'text-white bg-yellow-200 hover:bg-yellow-300 font-medium rounded-lg text-sm w-80 px-5 py-3 text-center',
     {
-      'opacity-50 cursor-progress': pending,
+      'opacity-50 cursor-progress': pending || disabled, // Jika pending atau disabled, beri kelas untuk tampilan tombol yang tidak aktif
     },
   );
 
   const handleSubmit = () => {
-    if (!pending) {
+    if (!pending && !disabled) {
       router.push('/stok');
     }
   };
@@ -232,8 +270,8 @@ export const StokAddButton = ({ label }: { label: string }) => {
     <button
       type="submit"
       className={className}
-      disabled={pending}
-      onClick={handleSubmit} 
+      disabled={pending || disabled} // Menonaktifkan tombol jika pending atau disabled
+      onClick={handleSubmit}
     >
       {label === 'save' ? (
         <span>{pending ? 'Saving...' : 'Save'}</span>

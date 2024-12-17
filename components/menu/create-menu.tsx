@@ -54,6 +54,7 @@ const CreateMenuForm = () => {
       newErrors.image = 'Image is required';
     }
 
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -187,3 +188,4 @@ const CreateMenuForm = () => {
 };
 
 export default CreateMenuForm;
+
