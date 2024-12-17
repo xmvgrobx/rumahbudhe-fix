@@ -24,6 +24,9 @@
 
 // export default Home;
 
+
+
+"use client"
 import Sidebar from "@/components/sidebar";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
