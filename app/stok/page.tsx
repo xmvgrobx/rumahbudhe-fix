@@ -24,44 +24,28 @@
 
 // export default Home;
 
+// app/stok/page.tsx
 
-// pages/stok.tsx
 import Sidebar from "@/components/sidebar";
 import Link from "next/link";
-import React from "react";
 import { prisma } from "@/lib/prisma";
 import StokTable from "../ui/stok/table";
+// Server-side function to fetch data
+async function fetchStok() {
+  const res = await fetch("http://localhost:3000/api/stok", {
+    next: { revalidate: 60 }, // ISR: Revalidate every 60 seconds
+  });
 
-// Define the type for your stock data
-interface Stok {
-  id: string;
-  nama: string;
-  jumlah: number;
-  harga: number;
+  if (!res.ok) {
+    throw new Error("Failed to fetch stok data");
+  }
+
+  return res.json();
 }
 
-// Get the stock data at build time with ISR
-export const getStaticProps = async () => {
-  try {
-    const stok = await prisma.stok.findMany(); // Fetch all stocks from the database
+export default async function StokPage() {
+  const stok = await fetchStok(); // Fetch the list of stocks
 
-    return {
-      props: {
-        stok,
-      },
-      revalidate: 60, // Regenerate the page at most every 60 seconds
-    };
-  } catch (error) {
-    console.error("Error fetching stok:", error);
-    return {
-      props: {
-        stok: [],
-      },
-    };
-  }
-};
-
-const Home = ({ stok }: { stok: Stok[] }) => {
   return (
     <div className="flex w-screen h-screen">
       <Sidebar />
@@ -81,6 +65,4 @@ const Home = ({ stok }: { stok: Stok[] }) => {
       </div>
     </div>
   );
-};
-
-export default Home;
+}
