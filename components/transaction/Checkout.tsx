@@ -131,6 +131,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                   onChange={(e) => setReferralCode(e.target.value)}
                   className="w-full px-3 py-2 border rounded-lg"
                   placeholder="Enter referral code"
+                  id="referral"
                 />
                 {referralValid && (
                   <span className="ml-2 text-green-600">
