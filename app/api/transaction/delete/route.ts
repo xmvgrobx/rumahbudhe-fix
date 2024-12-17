@@ -11,6 +11,7 @@ export async function DELETE(req: Request) {
       );
     }
 
+    // Cek apakah transaksi ada
     const emp = await prisma.transaction.findUnique({
       where: { id },
     });
@@ -22,6 +23,12 @@ export async function DELETE(req: Request) {
       );
     }
 
+    // Hapus semua item yang terkait dengan transaksi terlebih dahulu
+    await prisma.transactionItem.deleteMany({
+      where: { transactionId: id },
+    });
+
+    // Hapus transaksi setelah itemnya dihapus
     await prisma.transaction.delete({
       where: { id },
     });
