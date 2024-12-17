@@ -59,7 +59,7 @@ const CreateStok = () => {
               name="nama"
               id="nama"
               className="input input-bordered w-full max-w-xs"
-              placeholder="Nama stok dik..."
+              placeholder="Nama stok..."
               value={state.nama}
               onChange={handleChange}
             />
@@ -95,7 +95,7 @@ const CreateStok = () => {
               name="harga"
               id="harga"
               className="input input-bordered w-full max-w-xs"
-              placeholder="Harganye..."
+              placeholder="Harga..."
               value={state.harga}
               onChange={handleChange}
             />
