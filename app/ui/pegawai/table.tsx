@@ -43,6 +43,9 @@
 
 // export default PegawaiTable;
 
+
+
+
 import React from "react";
 import type { Pegawai } from "@prisma/client";
 import { EditPegawai, DeletePegawai } from "@/components/buttons";
