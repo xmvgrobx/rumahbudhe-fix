@@ -24,7 +24,7 @@
 
 // export default Home;
 
-
+'use client'
 import { useState, useEffect } from "react";
 
 interface Stok {
