@@ -1,15 +1,16 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { Stok } from '@prisma/client'; // Tipe otomatis dari Prisma
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+// Metode GET: Ambil data stok dari database
+export async function GET(req: NextRequest) {
   try {
-    // Ambil data stok dari database dengan tipe eksplisit
-    const stok: Stok[] = await prisma.stok.findMany();
-
-    res.status(200).json(stok);
+    const stok = await prisma.stok.findMany();
+    return NextResponse.json(stok);
   } catch (error) {
     console.error('Error fetching stok:', error);
-    res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data stok.' });
+    return NextResponse.json(
+      { error: 'Terjadi kesalahan saat mengambil data stok.' },
+      { status: 500 }
+    );
   }
 }
