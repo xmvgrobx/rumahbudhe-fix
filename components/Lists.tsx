@@ -13,7 +13,7 @@ export default function Lists() {
         <Link href="/dashboard">Dashboard</Link>
       </li>
       <button onClick={() => signIn()}>Sign In</button>
-      <button onClick={() => signOut()}>Sign Out</button>
+      <button onClick={() => signOut()}>Sign Out!</button>
     </ul>
   )
 }
